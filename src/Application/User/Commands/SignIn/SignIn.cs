@@ -54,7 +54,7 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, IActionResult
             loginResult.UserName,
             loginResult.Email,
             loginResult.PhoneNumber,
-            loginResult.EmailConfirmed
+            loginResult.EmailConfirmed,
             loginResult.Token,
         });
     }
