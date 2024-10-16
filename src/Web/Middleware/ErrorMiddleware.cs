@@ -33,7 +33,7 @@ namespace EcommerceAPI.Web.Middleware
             var problemDetails = new ProblemDetails
             {
                 Title = "An error occurred",
-                Status = context.Response.StatusCode,
+                Status = StatusCodes.Status500InternalServerError,
                 Detail = ex.Message,
             };
 
@@ -42,19 +42,23 @@ namespace EcommerceAPI.Web.Middleware
                 case InvalidOperationException:
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     problemDetails.Title = "Invalid operation";
+                    problemDetails.Status = StatusCodes.Status400BadRequest;
                     break;
+
                 case UnauthorizedAccessException:
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     problemDetails.Title = "Unauthorized";
+                    problemDetails.Status = StatusCodes.Status401Unauthorized;
                     break;
+
                 default:
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     problemDetails.Title = "Internal Server Error";
+                    problemDetails.Status = StatusCodes.Status500InternalServerError;
                     break;
             }
 
             context.Response.ContentType = "application/problem+json";
-
             var responseMessage = JsonSerializer.Serialize(problemDetails);
             return context.Response.WriteAsync(responseMessage);
         }

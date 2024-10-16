@@ -1,6 +1,7 @@
 using EcommerceAPI.Application.Common.Interfaces;
 using EcommerceAPI.Application.Common.Models;
 using EcommerceAPI.Application.User.Commands.Login;
+using EcommerceAPI.Application.User.Commands.SignUp;
 using EcommerceAPI.Infrastructure.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,8 @@ public class IdentityService : IIdentityService
     private readonly IAuthorizationService _authorizationService;
     private readonly IJWTService _jWTService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserStore<ApplicationUser> _userStore;
+    private readonly IUserEmailStore<ApplicationUser> _emailStore;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -26,7 +29,9 @@ public class IdentityService : IIdentityService
         IAuthorizationService authorizationService,
         IJWTService jwtService,
         SignInManager<ApplicationUser> signInManager,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IUserStore<ApplicationUser> userStore,
+        IUserEmailStore<ApplicationUser> emailStore)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
@@ -34,6 +39,8 @@ public class IdentityService : IIdentityService
         _signInManager = signInManager;
         _jWTService = jwtService;
         _httpContextAccessor = httpContextAccessor;
+        _userStore = userStore;
+        _emailStore = emailStore;
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -121,8 +128,62 @@ public class IdentityService : IIdentityService
         };
     }
 
-    //public async Task<RegisterResult> SignUpAsync(string email, string password)
-    //{
+    public async Task<SignUpResponse> SignUpAsync(string email, string password)
+    {
+        var foundUser = await _userManager.FindByEmailAsync(email);
+        if (foundUser != null)
+        {
+            throw new InvalidOperationException("Email already exist");
+        }
 
-    //}
+        var user = CreateUser();
+        user.Id = Guid.NewGuid().ToString();
+        user.UserName = email;
+
+
+        await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
+        await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
+        var result = await _userManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+        {
+            return new SignUpResponse { Succeeded = false };
+        }
+
+        var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
+
+        return new SignUpResponse
+        {
+            Succeeded = true,
+            UserId = user.Id,
+            UserName = user.UserName!,
+            EmailConfirmed = user.EmailConfirmed,
+            PhoneNumber = user.PhoneNumber!,
+            Email = user.Email!,
+            Token = token
+        };
+    }
+
+    private ApplicationUser CreateUser()
+    {
+        try
+        {
+            return Activator.CreateInstance<ApplicationUser>();
+        }
+        catch
+        {
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+        }
+    }
+
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
+    {
+        if (!_userManager.SupportsUserEmail)
+        {
+            throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+        return (IUserEmailStore<ApplicationUser>)_userStore;
+    }
 }
