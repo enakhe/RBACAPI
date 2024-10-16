@@ -9,6 +9,7 @@ using EcommerceAPI.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -71,6 +72,17 @@ public static class DependencyInjection
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddScoped<IJWTService, JWTRepository>();
+        services.AddTransient<IUserEmailStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
+        services.AddTransient<IUserStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredLength = 6;
+        });
 
         services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));

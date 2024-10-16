@@ -1,5 +1,6 @@
 ﻿using EcommerceAPI.Application.Common.Models;
 using EcommerceAPI.Application.User.Commands.Login;
+using EcommerceAPI.Application.User.Commands.SignUp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,4 +19,5 @@ public interface IIdentityService
     Task<Result> DeleteUserAsync(string userId);
 
     Task<SignInResponse> SignInAsync(string email, string password, bool rememberMe);
+    Task<SignUpResponse> SignUpAsync(string email, string password);
 }

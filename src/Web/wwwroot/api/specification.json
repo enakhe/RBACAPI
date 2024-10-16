@@ -342,18 +342,51 @@
         ]
       }
     },
-    "/api/Users": {
+    "/api/Users/signin": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "Login",
+        "operationId": "SignIn",
         "requestBody": {
           "x-name": "command",
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SignInCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "SignUp",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpCommand"
               }
             }
           },
@@ -653,6 +686,30 @@
           },
           "rememberMe": {
             "type": "boolean"
+          }
+        }
+      },
+      "SignUpCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email",
+          "password",
+          "confirmPassword"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmPassword": {
+            "type": "string",
+            "minLength": 1
           }
         }
       },

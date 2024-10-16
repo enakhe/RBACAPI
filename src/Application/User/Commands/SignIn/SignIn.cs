@@ -38,24 +38,24 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, IActionResult
     {
         if (request == null)
         {
-            return new BadRequestObjectResult("Invalid login request");
+            return new BadRequestObjectResult("Invalid sign in request");
         }
 
-        var loginResult = await _identityService.SignInAsync(request.Email, request.Password, request.RememberMe);
+        var signInResponse = await _identityService.SignInAsync(request.Email, request.Password, request.RememberMe);
 
-        if (!loginResult.Succeeded)
+        if (!signInResponse.Succeeded)
         {
-            throw new UnauthorizedAccessException("Invalid login attempt");
+            throw new UnauthorizedAccessException("Invalid sign in attempt");
         }
 
         return new OkObjectResult(new
         {
-            loginResult.UserId,
-            loginResult.UserName,
-            loginResult.Email,
-            loginResult.PhoneNumber,
-            loginResult.EmailConfirmed,
-            loginResult.Token,
+            signInResponse.UserId,
+            signInResponse.UserName,
+            signInResponse.Email,
+            signInResponse.PhoneNumber,
+            signInResponse.EmailConfirmed,
+            signInResponse.Token,
         });
     }
 }
