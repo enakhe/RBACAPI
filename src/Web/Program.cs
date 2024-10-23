@@ -1,5 +1,6 @@
 using System.Text;
 using EcommerceAPI.Infrastructure.Data;
+using EcommerceAPI.Infrastructure.Middleware;
 using EcommerceAPI.Web.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -62,6 +63,7 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseMiddleware<ErrorMiddleware>();
+app.UseMiddleware<JwtCookieAuthMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
