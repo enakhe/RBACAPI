@@ -108,8 +108,8 @@ public class IdentityService : IIdentityService
             return new SignInResponse { Succeeded = false };
         }
 
-        var result = await _signInManager.PasswordSignInAsync(email, password, rememberMe, lockoutOnFailure: false);
-        if (!result.Succeeded)
+        var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+        if (!passwordValid)
         {
             return new SignInResponse { Succeeded = false };
         }
@@ -127,6 +127,7 @@ public class IdentityService : IIdentityService
             Token = token
         };
     }
+
 
     public async Task<SignUpResponse> SignUpAsync(string email, string password)
     {

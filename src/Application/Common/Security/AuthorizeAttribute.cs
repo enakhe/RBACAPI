@@ -1,4 +1,9 @@
-﻿namespace EcommerceAPI.Application.Common.Security;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net;
+using System.Text.Json;
+
+namespace EcommerceAPI.Application.Common.Security;
 
 /// <summary>
 /// Specifies the class this attribute is applied to requires authorization.
@@ -20,4 +25,31 @@ public class AuthorizeAttribute : Attribute
     /// Gets or sets the policy name that determines access to the resource.
     /// </summary>
     public string Policy { get; set; } = string.Empty;
+}
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+public class AuthorizeUserAttribute : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        var user = context.HttpContext.Items["User"];
+
+        if (user == null)
+        {
+            var response = new
+            {
+                title = "Unauthorized",
+                status = (int)HttpStatusCode.Unauthorized
+            };
+
+            context.Result = new ContentResult
+            {
+                Content = JsonSerializer.Serialize(response),
+                ContentType = "application/json",
+                StatusCode = (int)HttpStatusCode.Unauthorized
+            };
+        }
+
+        base.OnActionExecuting(context);
+    }
 }

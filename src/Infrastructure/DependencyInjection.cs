@@ -31,12 +31,10 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-
             options.UseSqlServer(connectionString);
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services.AddAuthentication(options =>
@@ -51,27 +49,34 @@ public static class DependencyInjection
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["Jwt:Issuer"],
-                ValidAudience = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["JWT"];
+                    return Task.CompletedTask;
+                }
             };
         });
 
-        services.ConfigureApplicationCookie(options =>
-        {
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            options.Cookie.SameSite = SameSiteMode.Strict;
-        });
 
         services.AddAuthorizationBuilder();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders()
-            .AddApiEndpoints();
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+        })
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddScoped<IJWTService, JWTRepository>();
+
         services.AddTransient<IUserEmailStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
         services.AddTransient<IUserStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
 
@@ -89,4 +94,5 @@ public static class DependencyInjection
 
         return services;
     }
+
 }

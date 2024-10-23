@@ -28,7 +28,7 @@ public class JWTRepository : IJWTService
         };
 
         var token = new JwtSecurityToken(
-            issuer: configuration["Jwt.Issuer"],
+            issuer: configuration["Jwt:Issuer"],
             audience: configuration["Jwt:Audience"],
             claims: userClaims,
             expires: DateTime.Now.AddDays(1),
@@ -39,11 +39,50 @@ public class JWTRepository : IJWTService
 
         context.Response.Cookies.Append("JWT", jwt, new CookieOptions()
         {
-            Expires = DateTimeOffset.Now.AddHours(1),
+            Expires = DateTimeOffset.UtcNow.AddHours(1),
             MaxAge = TimeSpan.FromHours(1),
-            SameSite = SameSiteMode.Strict,
+            HttpOnly = true,
             Secure = true,
+            SameSite = SameSiteMode.Strict,
+            IsEssential = true
         });
         return jwt;
     }
+
+    public string? ValidateJWTToken(string token)
+    {
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);
+
+        try
+        {
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = configuration["Jwt:Audience"],
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            return userId;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
 }
+
