@@ -1,13 +1,16 @@
 using EcommerceAPI.Application.Common.Interfaces;
 using EcommerceAPI.Application.Common.Models;
 using EcommerceAPI.Application.User.Commands.Login;
+using EcommerceAPI.Application.User.Commands.SendOTP;
 using EcommerceAPI.Application.User.Commands.SignUp;
+using EcommerceAPI.Application.User.Commands.VerifyEmail;
 using EcommerceAPI.Infrastructure.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Infrastructure.Identity;
@@ -22,6 +25,7 @@ public class IdentityService : IIdentityService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserStore<ApplicationUser> _userStore;
     private readonly IUserEmailStore<ApplicationUser> _emailStore;
+    private readonly IOTPService _otpService;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -31,7 +35,8 @@ public class IdentityService : IIdentityService
         SignInManager<ApplicationUser> signInManager,
         IHttpContextAccessor httpContextAccessor,
         IUserStore<ApplicationUser> userStore,
-        IUserEmailStore<ApplicationUser> emailStore)
+        IUserEmailStore<ApplicationUser> emailStore,
+        IOTPService otpService)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
@@ -41,6 +46,7 @@ public class IdentityService : IIdentityService
         _httpContextAccessor = httpContextAccessor;
         _userStore = userStore;
         _emailStore = emailStore;
+        _otpService = otpService;
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -128,7 +134,6 @@ public class IdentityService : IIdentityService
         };
     }
 
-
     public async Task<SignUpResponse> SignUpAsync(string email, string password)
     {
         var foundUser = await _userManager.FindByEmailAsync(email);
@@ -162,6 +167,52 @@ public class IdentityService : IIdentityService
             PhoneNumber = user.PhoneNumber!,
             Email = user.Email!,
             Token = token
+        };
+    }
+
+    public async Task<SendOTPResponse> SendOTP(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+            throw new KeyNotFoundException("The email you provided is not registered");
+
+        var userId = await _userManager.GetUserIdAsync(user);
+        var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
+        var code = _otpService.GenerateOTP(userId, email, token, DateTime.UtcNow);
+
+        return new SendOTPResponse
+        {
+            Succeeded = true,
+            UserId = userId,
+            Code = code,
+            Email = email
+        };
+    }
+
+    public async Task<VerifyEmailResponse> VerifyEmail(string email, string otp)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+            throw new KeyNotFoundException("The email you provided is not registered");
+
+        var userId = await _userManager.GetUserIdAsync(user);
+        var token = _httpContextAccessor.HttpContext!.Request.Cookies["JWT"];
+        var otpData = _otpService.GetOtpCookieData(_httpContextAccessor.HttpContext);
+        if (otpData == null)
+            throw new InvalidOperationException("Invalid code");
+
+        var verifyEmailResponse = _otpService.ValidateOTP(userId, email, otpData, token!);
+        if(!verifyEmailResponse.IsValid)
+            throw new InvalidOperationException("Something unexpected happened");
+
+        user.EmailConfirmed = true;
+        var result = await _userManager.UpdateAsync(user);
+
+        return new VerifyEmailResponse
+        {
+            IsValid = true,
+            UserId = userId,
+            Message = "Email sucessfully validated"
         };
     }
 

@@ -1,6 +1,8 @@
 ﻿using EcommerceAPI.Application.Common.Models;
 using EcommerceAPI.Application.User.Commands.Login;
+using EcommerceAPI.Application.User.Commands.SendOTP;
 using EcommerceAPI.Application.User.Commands.SignUp;
+using EcommerceAPI.Application.User.Commands.VerifyEmail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,5 +21,10 @@ public interface IIdentityService
     Task<Result> DeleteUserAsync(string userId);
 
     Task<SignInResponse> SignInAsync(string email, string password, bool rememberMe);
+
     Task<SignUpResponse> SignUpAsync(string email, string password);
+
+    Task<SendOTPResponse> SendOTP(string email);
+
+    Task<VerifyEmailResponse> VerifyEmail(string email, string otp);
 }

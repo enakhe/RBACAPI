@@ -82,6 +82,7 @@ public static class DependencyInjection
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddScoped<IJWTService, JWTRepository>();
         services.AddScoped<IOAuthService, OAuthService>();
+        services.AddScoped<IOTPService, OTPService>();
 
         services.AddTransient<IUserEmailStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
         services.AddTransient<IUserStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
