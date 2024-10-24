@@ -45,6 +45,12 @@ namespace EcommerceAPI.Web.Middleware
                     problemDetails.Status = StatusCodes.Status400BadRequest;
                     break;
 
+                case KeyNotFoundException:
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    problemDetails.Title = "Not found";
+                    problemDetails.Status = StatusCodes.Status404NotFound;
+                    break;
+
                 case UnauthorizedAccessException:
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     problemDetails.Title = "Unauthorized";
