@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RootNamespace>EcommerceAPI.Web</RootNamespace>
     <AssemblyName>EcommerceAPI.Web</AssemblyName>
+    <UserSecretsId>24b7e66b-c10e-4295-b12e-94589300f08c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

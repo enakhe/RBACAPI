@@ -3,9 +3,12 @@
   <PropertyGroup>
     <RootNamespace>EcommerceAPI.Infrastructure</RootNamespace>
     <AssemblyName>EcommerceAPI.Infrastructure</AssemblyName>
+    <UserSecretsId>de1a33ac-5534-40e7-91d6-58fce5ef15a3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
