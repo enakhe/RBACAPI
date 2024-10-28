@@ -36,17 +36,27 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, IAc
         var email = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
         if (string.IsNullOrEmpty(email))
-            throw new UnauthorizedAccessException("User email not found.");
+        {
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return new UnauthorizedObjectResult(new
+            {
+                error = new[] { "Not authorized" }
+            });
+        }
 
         var verifyEmailResponse = await _identityService.VerifyEmail(email, request.code);
-        if (!verifyEmailResponse.IsValid)
-            throw new Exception("Something unexpected happened, unable to verify email");
+        if (!verifyEmailResponse.Succeeded)
+        {
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            return new BadRequestObjectResult(new
+            {
+                error = verifyEmailResponse.Errors
+            });
+        }
 
         return new OkObjectResult(new
         {
-            verifyEmailResponse.UserId,
-            verifyEmailResponse.IsValid,
-            verifyEmailResponse.Message,
+            verifyEmailResponse
         });
     }
 }

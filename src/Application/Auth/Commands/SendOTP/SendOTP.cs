@@ -35,20 +35,21 @@ public class SendOTPCommandHandler : IRequestHandler<SendOTPCommand, IActionResu
         var email = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
         if (string.IsNullOrEmpty(email))
-            throw new UnauthorizedAccessException("User email not found.");
+            throw new UnauthorizedAccessException("Invalid request");
 
         var otpResponse = await _identityService.SendOTP(email);
         if(!otpResponse.Succeeded)
-            throw new Exception("Something unexpected happened");
+        {
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            return new BadRequestObjectResult(new
+            {
+                error = otpResponse.Errors
+            });
+        }
 
         return new OkObjectResult(new
         {
-            otpResponse.Succeeded,
-            otpResponse.UserId,
-            otpResponse.Code,
-            otpResponse.Email,
-            otpResponse.CreatedDate,
-            otpResponse.ExpiryDate
+            data = otpResponse
         });
     }
 }

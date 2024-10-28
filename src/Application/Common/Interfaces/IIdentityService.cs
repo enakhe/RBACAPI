@@ -1,4 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Models;
+﻿using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
+using EcommerceAPI.Application.Auth.EventHandlers;
+using EcommerceAPI.Application.Common.Models;
 using EcommerceAPI.Application.User.Commands.Login;
 using EcommerceAPI.Application.User.Commands.SendOTP;
 using EcommerceAPI.Application.User.Commands.SignUp;
@@ -20,11 +22,13 @@ public interface IIdentityService
 
     Task<Result> DeleteUserAsync(string userId);
 
-    Task<SignInResponse> SignInAsync(string email, string password, bool rememberMe);
+    Task<Result> SignInAsync(string email, string password);
 
-    Task<SignUpResponse> SignUpAsync(string email, string password);
+    Task<Result> SignUpAsync(string email, string password);
 
-    Task<SendOTPResponse> SendOTP(string email);
+    Task<Result> SendOTP(string email);
 
-    Task<VerifyEmailResponse> VerifyEmail(string email, string otp);
+    Task<Result> VerifyEmail(string email, string otp);
+
+    Task<Result> GetPasswordResetToken(string email);
 }

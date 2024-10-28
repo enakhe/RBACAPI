@@ -11,6 +11,6 @@ namespace EcommerceAPI.Application.Common.Interfaces;
 public interface IOTPService
 {
     string GenerateOTP(string userId, string email, string token, DateTime expiryDate);
-    VerifyEmailResponse ValidateOTP(string userId, string email, OtpCookieData otpData, string token);
+    Result ValidateOTP(string userId, string email, OtpCookieData otpData, string token);
     OtpCookieData GetOtpCookieData(HttpContext context);
 }

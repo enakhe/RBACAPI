@@ -1,14 +1,14 @@
-﻿using EcommerceAPI.Application.Common.Security;
+﻿using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
+using EcommerceAPI.Application.Common.Security;
 using EcommerceAPI.Application.User.Commands.Login;
 using EcommerceAPI.Application.User.Commands.SendOTP;
 using EcommerceAPI.Application.User.Commands.SignUp;
 using EcommerceAPI.Application.User.Commands.VerifyEmail;
-using EcommerceAPI.Infrastructure.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceAPI.Web.Endpoints;
 
-public class Users : EndpointGroupBase
+public class Auth : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
@@ -16,7 +16,8 @@ public class Users : EndpointGroupBase
             .MapPost(SignIn, "signin")
             .MapPost(SignUp, "signup")
             .MapPost(SendOTP, "send-otp")
-            .MapPost(VerifyEmail, "verify-email");
+            .MapPost(VerifyEmail, "verify-email")
+            .MapPost(GetPasswordRestToken, "password-reset-token");
     }
 
     public Task<IActionResult> SignIn(ISender send, SignInCommand command)
@@ -36,8 +37,13 @@ public class Users : EndpointGroupBase
     }
 
     [AuthorizeUser]
-    public Task<IActionResult> VerifyEmail(ISender sender, VerifyEmailCommand comand)
+    public Task<IActionResult> VerifyEmail(ISender sender, VerifyEmailCommand command)
     {
-        return sender.Send(comand);
+        return sender.Send(command);
+    }
+
+    public Task<IActionResult> GetPasswordRestToken(ISender sender, GetPasswordResetTokenCommand command)
+    {
+        return sender.Send(command);
     }
 }

@@ -1,5 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
+using EcommerceAPI.Application.Auth.EventHandlers;
+using EcommerceAPI.Application.Common.Exceptions;
 using EcommerceAPI.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceAPI.Application.User.Commands.Login;
@@ -10,9 +15,8 @@ public record SignInCommand : IRequest<IActionResult>
     public required string Email { get; set; }
 
     [Required]
+    [DataType(DataType.Password)]
     public required string Password { get; set; }
-
-    public bool RememberMe { get; set; }
 }
 
 public class SignInCommandValidator : AbstractValidator<SignInCommand>
@@ -28,34 +32,30 @@ public class SignInCommandValidator : AbstractValidator<SignInCommand>
 public class SignInCommandHandler : IRequestHandler<SignInCommand, IActionResult>
 {
     private readonly IIdentityService _identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SignInCommandHandler(IIdentityService identityService)
+    public SignInCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
     {
         _identityService = identityService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<IActionResult> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
-        if (request == null)
-        {
-            return new BadRequestObjectResult("Invalid sign in request");
-        }
-
-        var signInResponse = await _identityService.SignInAsync(request.Email, request.Password, request.RememberMe);
+        var signInResponse = await _identityService.SignInAsync(request.Email, request.Password);
 
         if (!signInResponse.Succeeded)
         {
-            throw new UnauthorizedAccessException("Invalid sign in attempt");
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return new UnauthorizedObjectResult(new
+            {
+                error = signInResponse.Errors
+            });
         }
 
         return new OkObjectResult(new
         {
-            signInResponse.UserId,
-            signInResponse.UserName,
-            signInResponse.Email,
-            signInResponse.PhoneNumber,
-            signInResponse.EmailConfirmed,
-            signInResponse.Token,
+            data = signInResponse
         });
     }
 }
