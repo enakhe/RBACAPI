@@ -168,7 +168,7 @@ public class IdentityService : IIdentityService
         });
     }
 
-    public async Task<Result> SendOTP(string email)
+    public async Task<Result> SendOTPAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
@@ -188,7 +188,7 @@ public class IdentityService : IIdentityService
         });
     }
 
-    public async Task<Result> VerifyEmail(string email, string otp)
+    public async Task<Result> VerifyEmailAsync(string email, string otp)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
@@ -207,19 +207,22 @@ public class IdentityService : IIdentityService
         }
 
         var verifyEmailResponse = _otpService.ValidateOTP(userId, email, otpData, token!);
+        if(!verifyEmailResponse.Succeeded)
+        {
+            IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };
+            return Result.Failure(errors);
+        }
 
         user.EmailConfirmed = true;
         await _userManager.UpdateAsync(user);
 
         return Result.Success(new
         {
-            IsValid = true,
-            UserId = userId,
             Message = "Sucessfully validated email"
         });
     }
 
-    public async Task<Result> GetPasswordResetToken(string email)
+    public async Task<Result> GetPasswordResetTokenAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
@@ -236,6 +239,28 @@ public class IdentityService : IIdentityService
             Succeeded = true,
             Code = code,
             Messgae = "Sucessfully sent reset token"
+        });
+    }
+
+    public async Task<Result> RestPasswordAsync(string email, string code, string password)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
+            return Result.Failure(errors);
+        }
+
+        var decodeCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        var result = await _userManager.ResetPasswordAsync(user, decodeCode, password);
+        if (!result.Succeeded)
+        {
+            return Result.Failure(result.Errors.Select(e => e.Description));
+        }
+
+        return Result.Success(new
+        {
+            Message = "Succesfully reset password, kindly login"
         });
     }
 

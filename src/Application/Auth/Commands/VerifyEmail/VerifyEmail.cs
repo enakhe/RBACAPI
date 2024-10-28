@@ -44,7 +44,7 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, IAc
             });
         }
 
-        var verifyEmailResponse = await _identityService.VerifyEmail(email, request.code);
+        var verifyEmailResponse = await _identityService.VerifyEmailAsync(email, request.code);
         if (!verifyEmailResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
