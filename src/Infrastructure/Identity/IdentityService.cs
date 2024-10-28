@@ -1,3 +1,6 @@
+using System.Text;
+using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
+using EcommerceAPI.Application.Auth.EventHandlers;
 using EcommerceAPI.Application.Common.Interfaces;
 using EcommerceAPI.Application.Common.Models;
 using EcommerceAPI.Application.User.Commands.Login;
@@ -5,6 +8,7 @@ using EcommerceAPI.Application.User.Commands.SendOTP;
 using EcommerceAPI.Application.User.Commands.SignUp;
 using EcommerceAPI.Application.User.Commands.VerifyEmail;
 using EcommerceAPI.Infrastructure.Interface;
+using EcommerceAPI.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +16,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EcommerceAPI.Infrastructure.Identity;
 
@@ -26,6 +31,7 @@ public class IdentityService : IIdentityService
     private readonly IUserStore<ApplicationUser> _userStore;
     private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly IOTPService _otpService;
+    private readonly ILogger<IdentityService> _logger;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -36,7 +42,8 @@ public class IdentityService : IIdentityService
         IHttpContextAccessor httpContextAccessor,
         IUserStore<ApplicationUser> userStore,
         IUserEmailStore<ApplicationUser> emailStore,
-        IOTPService otpService)
+        IOTPService otpService,
+        ILogger<IdentityService> logger)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
@@ -47,6 +54,7 @@ public class IdentityService : IIdentityService
         _userStore = userStore;
         _emailStore = emailStore;
         _otpService = otpService;
+        _logger = logger;
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -95,8 +103,8 @@ public class IdentityService : IIdentityService
     public async Task<Result> DeleteUserAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-
-        return user != null ? await DeleteUserAsync(user) : Result.Success();
+        IEnumerable<string> data = new List<string> { "Successfully deleted user" };
+        return user != null ? await DeleteUserAsync(user) : Result.Success(data);
     }
 
     public async Task<Result> DeleteUserAsync(ApplicationUser user)
@@ -106,46 +114,42 @@ public class IdentityService : IIdentityService
         return result.ToApplicationResult();
     }
 
-    public async Task<SignInResponse> SignInAsync(string email, string password, bool rememberMe)
+    public async Task<Result> SignInAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            return new SignInResponse { Succeeded = false };
+            IEnumerable<string> errors = new List<string> { "Invalid sign-in attempt. The email or password is incorrect" };
+            return Result.Failure(errors);
         }
 
-        var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+        var passwordValid = await _userManager.CheckPasswordAsync(user!, password);
         if (!passwordValid)
         {
-            return new SignInResponse { Succeeded = false };
+            IEnumerable<string> errors = new List<string> { "Invalid sign-in attempt. The email or password is incorrect" };
+            return Result.Failure(errors);
         }
 
         var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
-
-        return new SignInResponse
+        return Result.Success(new
         {
-            Succeeded = true,
-            UserId = user.Id,
-            UserName = user.UserName,
-            EmailConfirmed = user.EmailConfirmed,
-            PhoneNumber = user.PhoneNumber,
-            Email = user.Email,
-            Token = token
-        };
+            Token = token,
+            Message = "User logged in successfully"
+        });
     }
 
-    public async Task<SignUpResponse> SignUpAsync(string email, string password)
+    public async Task<Result> SignUpAsync(string email, string password)
     {
         var foundUser = await _userManager.FindByEmailAsync(email);
         if (foundUser != null)
         {
-            throw new InvalidOperationException("Email already exist");
+            IEnumerable<string> errors = new List<string> { "The provided email is already used" };
+            return Result.Failure(errors);
         }
 
         var user = CreateUser();
         user.Id = Guid.NewGuid().ToString();
         user.UserName = email;
-
 
         await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
         await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
@@ -153,67 +157,86 @@ public class IdentityService : IIdentityService
 
         if (!result.Succeeded)
         {
-            return new SignUpResponse { Succeeded = false };
+            return Result.Failure(result.Errors.Select(e => e.Description));
         }
 
         var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
-
-        return new SignUpResponse
+        return Result.Success(new
         {
-            Succeeded = true,
-            UserId = user.Id,
-            UserName = user.UserName!,
-            EmailConfirmed = user.EmailConfirmed,
-            PhoneNumber = user.PhoneNumber!,
-            Email = user.Email!,
-            Token = token
-        };
+            Token = token,
+            Message = "User logged in successfully"
+        });
     }
 
-    public async Task<SendOTPResponse> SendOTP(string email)
+    public async Task<Result> SendOTP(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-            throw new KeyNotFoundException("The email you provided is not registered");
-
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid login attempt" };
+            return Result.Failure(errors);
+        }
+            
         var userId = await _userManager.GetUserIdAsync(user);
         var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
         var code = _otpService.GenerateOTP(userId, email, token, DateTime.UtcNow);
 
-        return new SendOTPResponse
+        return Result.Success(new
         {
-            Succeeded = true,
-            UserId = userId,
             Code = code,
-            Email = email
-        };
+            Message = "Successfully sent OTP code"
+        });
     }
 
-    public async Task<VerifyEmailResponse> VerifyEmail(string email, string otp)
+    public async Task<Result> VerifyEmail(string email, string otp)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-            throw new KeyNotFoundException("The email you provided is not registered");
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid login attempt" };
+            return Result.Failure(errors);
+        }
 
         var userId = await _userManager.GetUserIdAsync(user);
         var token = _httpContextAccessor.HttpContext!.Request.Cookies["JWT"];
         var otpData = _otpService.GetOtpCookieData(_httpContextAccessor.HttpContext);
         if (otpData == null)
-            throw new InvalidOperationException("Invalid code");
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid code" };
+            return Result.Failure(errors);
+        }
 
         var verifyEmailResponse = _otpService.ValidateOTP(userId, email, otpData, token!);
-        if(!verifyEmailResponse.IsValid)
-            throw new InvalidOperationException("Something unexpected happened");
 
         user.EmailConfirmed = true;
-        var result = await _userManager.UpdateAsync(user);
+        await _userManager.UpdateAsync(user);
 
-        return new VerifyEmailResponse
+        return Result.Success(new
         {
             IsValid = true,
             UserId = userId,
-            Message = "Email sucessfully validated"
-        };
+            Message = "Sucessfully validated email"
+        });
+    }
+
+    public async Task<Result> GetPasswordResetToken(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
+            return Result.Failure(errors);
+        }
+
+        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        return Result.Success(new
+        {
+            Succeeded = true,
+            Code = code,
+            Messgae = "Sucessfully sent reset token"
+        });
     }
 
     private ApplicationUser CreateUser()

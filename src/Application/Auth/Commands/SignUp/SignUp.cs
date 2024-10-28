@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EcommerceAPI.Application.Common.Interfaces;
 using EcommerceAPI.Application.User.Commands.Login;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceAPI.Application.User.Commands.SignUp;
@@ -26,39 +27,43 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
     public SignUpCommandValidator(IApplicationDbContext context)
     {
         _context = context;
+
+        RuleFor(x => x.Email)
+            .EmailAddress()
+            .NotNull()
+            .NotEmpty();
     }
 }
 
 public class SignUpCommandHandler : IRequestHandler<SignUpCommand, IActionResult>
 {
     private readonly IIdentityService _identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SignUpCommandHandler(IIdentityService identityService)
+    public SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
     {
         _identityService = identityService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<IActionResult> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
         if (request == null)
-        {
             return new BadRequestObjectResult("Invalid sign up request");
-        }
 
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
         {
-            throw new UnauthorizedAccessException("Invalid sign in attempt");
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            return new BadRequestObjectResult(new
+            {
+                error = signUpResponse.Errors
+            });
         }
 
         return new OkObjectResult(new
         {
-            signUpResponse.UserId,
-            signUpResponse.UserName,
-            signUpResponse.Email,
-            signUpResponse.PhoneNumber,
-            signUpResponse.EmailConfirmed,
-            signUpResponse.Token,
+            data = signUpResponse
         });
     }
 }

@@ -40,29 +40,29 @@ public class OTPService : IOTPService
         }
     }
 
-    public VerifyEmailResponse ValidateOTP(string userId, string email, OtpCookieData otpData, string token)
+    public Result ValidateOTP(string userId, string email, OtpCookieData otpData, string token)
     {
-        var result = new VerifyEmailResponse();
 
         if (DateTime.UtcNow > otpData.ExpiresAt)
         {
-            Console.WriteLine("OTP has expired.");
-            result.IsValid = false;
-            result.Message = "Invalid OTP code";
-            return result;
+            IEnumerable<string> errors = new List<string> { "OTP code has expired, kindly request another one" };
+            return Result.Failure(errors);
         }
 
         string expectedOtp = GenerateOTP(userId, email, token, otpData.IssuedAt);
 
-        result.IsValid = otpData.Otp == expectedOtp;
+        bool isValid = otpData.Otp == expectedOtp;
 
-        if (result.IsValid)
+        if (!isValid)
         {
-            result.UserId = userId;
-            result.Message = "Sucessfully validated OTP";
+            IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };
+            return Result.Failure(errors);
         }
 
-        return result;
+        return Result.Success(new
+        {
+            Message = "Sucessfully validated email"
+        });
     }
 
     public void SetOtpCookie(HttpContext context, string otp)
