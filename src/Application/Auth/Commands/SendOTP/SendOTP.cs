@@ -37,7 +37,7 @@ public class SendOTPCommandHandler : IRequestHandler<SendOTPCommand, IActionResu
         if (string.IsNullOrEmpty(email))
             throw new UnauthorizedAccessException("Invalid request");
 
-        var otpResponse = await _identityService.SendOTP(email);
+        var otpResponse = await _identityService.SendOTPAsync(email);
         if(!otpResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;

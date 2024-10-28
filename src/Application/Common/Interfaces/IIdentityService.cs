@@ -26,9 +26,11 @@ public interface IIdentityService
 
     Task<Result> SignUpAsync(string email, string password);
 
-    Task<Result> SendOTP(string email);
+    Task<Result> SendOTPAsync(string email);
 
-    Task<Result> VerifyEmail(string email, string otp);
+    Task<Result> VerifyEmailAsync(string email, string otp);
 
-    Task<Result> GetPasswordResetToken(string email);
+    Task<Result> GetPasswordResetTokenAsync(string email);
+
+    Task<Result> RestPasswordAsync(string email, string code, string password);
 }
