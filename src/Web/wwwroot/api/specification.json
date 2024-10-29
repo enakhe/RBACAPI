@@ -289,7 +289,7 @@
         },
         "security": [
           {
-            "JWT": []
+            "Auth.JWT.AccessToken": []
           }
         ]
       },
@@ -325,7 +325,7 @@
         },
         "security": [
           {
-            "JWT": []
+            "Auth.JWT.AccessToken": []
           }
         ]
       }
@@ -367,7 +367,7 @@
         },
         "security": [
           {
-            "JWT": []
+            "Auth.JWT.AccessToken": []
           }
         ]
       },
@@ -395,7 +395,7 @@
         },
         "security": [
           {
-            "JWT": []
+            "Auth.JWT.AccessToken": []
           }
         ]
       }
@@ -437,7 +437,7 @@
         },
         "security": [
           {
-            "JWT": []
+            "Auth.JWT.AccessToken": []
           }
         ]
       }
@@ -576,7 +576,7 @@
         },
         "security": [
           {
-            "JWT": []
+            "Auth.JWT.AccessToken": []
           }
         ]
       }
@@ -953,7 +953,7 @@
       }
     },
     "securitySchemes": {
-      "JWT": {
+      "Auth.JWT.AccessToken": {
         "type": "apiKey",
         "description": "Type into the textbox: Bearer {your JWT token}.",
         "name": "Authorization",
@@ -963,7 +963,7 @@
   },
   "security": [
     {
-      "JWT": []
+      "Auth.JWT.AccessToken": []
     }
   ]
 }

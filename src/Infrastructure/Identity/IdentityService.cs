@@ -130,10 +130,12 @@ public class IdentityService : IIdentityService
             return Result.Failure(errors);
         }
 
-        var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
+        var accessToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        var refreshToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
         return Result.Success(new
         {
-            Token = token,
+            accessToken,
+            refreshToken,
             Message = "User logged in successfully"
         });
     }
@@ -160,10 +162,14 @@ public class IdentityService : IIdentityService
             return Result.Failure(result.Errors.Select(e => e.Description));
         }
 
-        var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
+        var accessToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        var refreshToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
+        user.LastLoginDate = DateTime.UtcNow;
+        await _userManager.UpdateAsync(user);
         return Result.Success(new
         {
-            Token = token,
+            accessToken,
+            refreshToken,
             Message = "User logged in successfully"
         });
     }
@@ -178,8 +184,8 @@ public class IdentityService : IIdentityService
         }
             
         var userId = await _userManager.GetUserIdAsync(user);
-        var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
-        var code = _otpService.GenerateOTP(userId, email, token, DateTime.UtcNow);
+        var otpToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "OTPToken", DateTimeOffset.UtcNow.AddMinutes(5));
+        var code = _otpService.GenerateOTP(userId, email, otpToken, DateTime.UtcNow);
 
         return Result.Success(new
         {
@@ -198,7 +204,7 @@ public class IdentityService : IIdentityService
         }
 
         var userId = await _userManager.GetUserIdAsync(user);
-        var token = _httpContextAccessor.HttpContext!.Request.Cookies["JWT"];
+        var token = _httpContextAccessor.HttpContext!.Request.Cookies["Auth.JWT.AccessToken"];
         var otpData = _otpService.GetOtpCookieData(_httpContextAccessor.HttpContext);
         if (otpData == null)
         {

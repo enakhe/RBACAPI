@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(swagger =>
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
-        BearerFormat = "JWT",
+        BearerFormat = "Auth.JWT.AccessToken",
         In = ParameterLocation.Header
     });
     swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -62,8 +62,8 @@ else
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
-app.UseMiddleware<ErrorMiddleware>();
 app.UseMiddleware<JwtCookieAuthMiddleware>();
+app.UseMiddleware<ErrorMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();

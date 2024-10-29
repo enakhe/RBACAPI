@@ -1,6 +1,8 @@
-﻿using EcommerceAPI.Infrastructure.Identity;
+﻿using EcommerceAPI.Application.Common.Interfaces;
+using EcommerceAPI.Infrastructure.Identity;
 using EcommerceAPI.Infrastructure.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,11 +14,16 @@ namespace EcommerceAPI.Infrastructure.Repository;
 public class JWTRepository : IJWTService
 {
     private readonly IConfiguration configuration;
-    public JWTRepository(IConfiguration configuration)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public JWTRepository(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
     {
         this.configuration = configuration;
+        _httpContextAccessor = httpContextAccessor;
+        _userManager = userManager;
     }
-    public string GenerateJWTToken(HttpContext context, ApplicationUser user)
+    public string GenerateToken(HttpContext context, ApplicationUser user, string tokenName, DateTimeOffset validTime)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -37,10 +44,9 @@ public class JWTRepository : IJWTService
 
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-        context.Response.Cookies.Append("JWT", jwt, new CookieOptions()
+        context.Response.Cookies.Append($"Auth.JWT.{tokenName}", jwt, new CookieOptions()
         {
-            Expires = DateTimeOffset.UtcNow.AddHours(1),
-            MaxAge = TimeSpan.FromHours(1),
+            Expires = validTime,
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
@@ -84,5 +90,14 @@ public class JWTRepository : IJWTService
         }
     }
 
+    public async Task<string?> RefreshTokenAsync(string refreshToken)
+    {
+        var tokenValidationResult = ValidateJWTToken(refreshToken);
+        if (string.IsNullOrEmpty(tokenValidationResult))
+            return null;
+
+        var user = await _userManager.FindByIdAsync(tokenValidationResult!);
+        return GenerateToken(_httpContextAccessor.HttpContext!, user!, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+    }
 }
 

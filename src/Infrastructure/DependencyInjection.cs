@@ -58,7 +58,7 @@ public static class DependencyInjection
             {
                 OnMessageReceived = context =>
                 {
-                    context.Token = context.Request.Cookies["JWT"];
+                    context.Token = context.Request.Cookies["Auth.JWT.AccessToken"];
                     return Task.CompletedTask;
                 }
             };
