@@ -35,4 +35,6 @@ public interface IIdentityService
     Task<Result> RestPasswordAsync(string email, string code, string password);
 
     Task<Result> LogOut(string userId);
+
+    Task<Result> ChangePassword(string userId, string password, string confirmPassword);
 }

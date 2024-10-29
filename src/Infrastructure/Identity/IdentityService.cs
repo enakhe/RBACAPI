@@ -284,6 +284,28 @@ public class IdentityService : IIdentityService
         });
     }
 
+    public async Task<Result> ChangePassword(string userId, string password, string newPassword)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
+            return Result.Failure(errors);
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, password, newPassword);
+        if(!result.Succeeded)
+        {
+            return Result.Failure(result.Errors.Select(e => e.Description));
+        }
+
+        await _userManager.UpdateAsync(user);
+        return Result.Success(new
+        {
+            Message = "Succesfully changed password, you will be logged out shortly to reauthenticate"
+        });
+    }
+
     private ApplicationUser CreateUser()
     {
         try

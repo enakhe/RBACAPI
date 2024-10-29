@@ -51,6 +51,12 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, IActionResult
         if (request == null)
             return new BadRequestObjectResult("Invalid sign up request");
 
+        if (request.Password != request.ConfirmPassword)
+            return new BadRequestObjectResult(new
+            {
+                error = "The new password and confirmation password do not match."
+            });
+
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
         {
