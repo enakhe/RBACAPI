@@ -25,37 +25,41 @@ public class JwtCookieAuthMiddleware
 
     public async Task Invoke(HttpContext context, UserManager<ApplicationUser> userManager, IJWTService jWTService)
     {
-        var token = context.Request.Cookies["JWT"];
-        if (string.IsNullOrEmpty(token))
+        var accessToken = context.Request.Cookies["Auth.JWT.AccessToken"];
+        var refreshToken = context.Request.Cookies["Auth.JWT.RefreshToken"];
+
+        var userId = jWTService.ValidateJWTToken(accessToken!);
+        if (string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(refreshToken))
         {
-            await _next(context);
-            return;
+            var newAccessToken = await jWTService.RefreshTokenAsync(refreshToken);
+
+            if (!string.IsNullOrEmpty(newAccessToken))
+            {
+                userId = jWTService.ValidateJWTToken(newAccessToken);
+            }
         }
 
-        var userId = jWTService.ValidateJWTToken(token);
-        if (string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(userId))
         {
-            await _next(context);
-            return;
-        }
-
-        var user = await userManager.FindByIdAsync(userId);
-        if (user != null)
-        {
-            var claims = new List<Claim>
-            { 
+            var user = await userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var claims = new List<Claim>
+            {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!)
             };
 
-            var identity = new ClaimsIdentity(claims, "Bearer");
-            var principal = new ClaimsPrincipal(identity);
+                var identity = new ClaimsIdentity(claims, "Bearer");
+                var principal = new ClaimsPrincipal(identity);
 
-            context.User = principal;
+                context.User = principal;
+            }
         }
 
         await _next(context);
     }
+
 
 }

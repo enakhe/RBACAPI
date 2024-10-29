@@ -63,7 +63,7 @@ public class OAuthService : IOAuthService
 
         if (user is not null)
         {
-            var token = _jWTService.GenerateJWTToken(_httpContextAccessor.HttpContext!, user);
+            var token = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
             return new GoogleSignInResponse
             {
                 Succeeded = true,

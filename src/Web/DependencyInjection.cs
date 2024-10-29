@@ -37,7 +37,7 @@ public static class DependencyInjection
             configure.Title = "EcommerceAPI API";
 
             // Add JWT
-            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            configure.AddSecurity("Auth.JWT.AccessToken", Enumerable.Empty<string>(), new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.ApiKey,
                 Name = "Authorization",
@@ -45,7 +45,7 @@ public static class DependencyInjection
                 Description = "Type into the textbox: Bearer {your JWT token}."
             });
 
-            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Auth.JWT.AccessToken"));
         });
 
         return services;
