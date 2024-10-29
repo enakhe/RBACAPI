@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
 using EcommerceAPI.Application.Auth.EventHandlers;
@@ -267,6 +268,19 @@ public class IdentityService : IIdentityService
         return Result.Success(new
         {
             Message = "Succesfully reset password, kindly login"
+        });
+    }
+
+    public async Task<Result> LogOut(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        await _userManager.UpdateAsync(user!);
+        _httpContextAccessor!.HttpContext!.Response.Cookies.Delete("Auth.JWT.AccessToken");
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Auth.JWT.RefreshToken");
+
+        return Result.Success(new
+        {
+            Message = "Succesfully logged out user"
         });
     }
 

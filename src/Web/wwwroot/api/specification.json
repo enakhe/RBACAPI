@@ -204,6 +204,39 @@
         }
       }
     },
+    "/api/Auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "LogOut",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogOutCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/OAuth/google": {
       "post": {
         "tags": [
@@ -687,6 +720,10 @@
             "type": "string"
           }
         }
+      },
+      "LogOutCommand": {
+        "type": "object",
+        "additionalProperties": false
       },
       "GoogleSignInCommand": {
         "type": "object",

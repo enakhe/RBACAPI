@@ -1,4 +1,5 @@
 ﻿using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
+using EcommerceAPI.Application.Auth.Commands.LogOut;
 using EcommerceAPI.Application.Auth.Commands.ResetPassword;
 using EcommerceAPI.Application.Common.Security;
 using EcommerceAPI.Application.User.Commands.Login;
@@ -19,7 +20,8 @@ public class Auth : EndpointGroupBase
             .MapPost(SendOTP, "send-otp")
             .MapPost(VerifyEmail, "verify-email")
             .MapPost(GetPasswordRestToken, "password-reset-token")
-            .MapPost(ResetPassword, "reset-password");
+            .MapPost(ResetPassword, "reset-password")
+            .MapPost(LogOut, "logout");
     }
 
     public Task<IActionResult> SignIn(ISender send, SignInCommand command)
@@ -50,6 +52,11 @@ public class Auth : EndpointGroupBase
     }
 
     public Task<IActionResult> ResetPassword(ISender sender, ResetPasswordCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    public Task<IActionResult> LogOut(ISender sender, LogOutCommand command)
     {
         return sender.Send(command);
     }
