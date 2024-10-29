@@ -49,6 +49,12 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
 
     public async Task<IActionResult> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
+        if (request.Password != request.ConfirmPassword)
+            return new BadRequestObjectResult(new
+            {
+                error = "The new password and confirmation password do not match."
+            });
+
         var resetPasswordResponse = await _identityService.RestPasswordAsync(request.Email, request.Code, request.Password);
 
         if (!resetPasswordResponse.Succeeded)
