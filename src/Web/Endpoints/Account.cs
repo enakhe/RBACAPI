@@ -1,4 +1,5 @@
-﻿using EcommerceAPI.Application.Account.Commands.EnableAuthenticator;
+﻿using EcommerceAPI.Application.Account.Commands.Disable2FAuthentication;
+using EcommerceAPI.Application.Account.Commands.EnableAuthenticator;
 using EcommerceAPI.Application.Account.Commands.GenerateRecoveryCodes;
 using EcommerceAPI.Application.Account.Queries.Profile;
 using EcommerceAPI.Application.Common.Security;
@@ -14,6 +15,7 @@ public class Account : EndpointGroupBase
         app.MapGroup(this)
             .MapGet(UserProfile, "profile")
             .MapPost(EnableAuthenticator, "enable-2fa")
+            .MapPost(Disable2FAuthentication, "disable-2fa")
             .MapPost(GenerateRecoveryCodes, "generate-recovery-codes");
     }
  
@@ -30,6 +32,11 @@ public class Account : EndpointGroupBase
     public Task<IActionResult> EnableAuthenticator(ISender sender)
     {
         return sender.Send(new EnableAuthenticatorCommand());
+    }
+
+    public Task<IActionResult> Disable2FAuthentication(ISender sender)
+    {
+        return sender.Send(new Disable2FAuthenticationCommand());
     }
 }
 

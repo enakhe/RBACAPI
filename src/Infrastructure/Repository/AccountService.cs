@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using EcommerceAPI.Application.Common.Interfaces;
@@ -98,6 +99,33 @@ public class AccountService : IAccountService
         return Result.Success(new
         {
             Message = "Your account is now more secure! Two Factor Authentication has been enabled."
+        });
+    }
+
+    public async Task<Result> Disable2FAuthentication(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "We couldn’t find your profile. Please ensure you are authenticated" };
+            return Result.Failure(errors);
+        }
+
+        if (!await _userManager.GetTwoFactorEnabledAsync(user))
+        {
+            IEnumerable<string> errors = new List<string> { "2FA is not currently active on this account, so disabling it isn’t necessary." };
+            return Result.Failure(errors);
+        }
+
+        var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+        if (!disable2faResult.Succeeded)
+        {
+            return Result.Failure(disable2faResult.Errors.Select(e => e.Description));
+        }
+
+        return Result.Success(new
+        {
+            Message = "2fa has been disabled.You can reenable 2fa when you setup an authenticator app"
         });
     }
 }

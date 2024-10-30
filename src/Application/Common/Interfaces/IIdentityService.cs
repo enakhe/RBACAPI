@@ -37,4 +37,6 @@ public interface IIdentityService
     Task<Result> LogOut(string userId);
 
     Task<Result> ChangePassword(string userId, string password, string confirmPassword);
+
+    string GetUserId();
 }
