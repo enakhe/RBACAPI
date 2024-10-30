@@ -115,6 +115,15 @@ public class IdentityService : IIdentityService
         return result.ToApplicationResult();
     }
 
+    public string GetUserId()
+    {
+        var httpContext = _httpContextAccessor.HttpContext;
+        var user = httpContext?.User;
+        var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return userId!;
+    }
+
     public async Task<Result> SignInAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);

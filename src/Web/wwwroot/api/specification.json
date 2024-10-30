@@ -48,6 +48,27 @@
         }
       }
     },
+    "/api/Account/disable-2fa": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Disable2FAuthentication",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Account/generate-recovery-codes": {
       "post": {
         "tags": [
