@@ -28,7 +28,7 @@ public class ProfileQueryHandler : IRequestHandler<ProfileQuery, IActionResult>
 
 
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Invalid request");
+            throw new UnauthorizedAccessException("We couldn’t find your profile. Please ensure you're authenticated");
 
         var profileResponse = await _accountService.ProfileAsync(userId);
         if (!profileResponse.Succeeded)
@@ -42,7 +42,7 @@ public class ProfileQueryHandler : IRequestHandler<ProfileQuery, IActionResult>
 
         return new OkObjectResult(new
         {
-            data = profileResponse
+            response = profileResponse
         });
     }
 }

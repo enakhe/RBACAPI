@@ -133,11 +133,13 @@ public class IdentityService : IIdentityService
 
         var accessToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
         var refreshToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
+        user.LastLoginDate = DateTime.Now;
+        await _userManager.UpdateAsync(user);
         return Result.Success(new
         {
             accessToken,
             refreshToken,
-            Message = "User logged in successfully"
+            Message = "Great news! You’ve logged in successfully. Let’s get started!"
         });
     }
 
@@ -171,7 +173,7 @@ public class IdentityService : IIdentityService
         {
             accessToken,
             refreshToken,
-            Message = "User logged in successfully"
+            Message = "User signed up successfully"
         });
     }
 
