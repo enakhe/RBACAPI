@@ -24,7 +24,7 @@ public class AccountService : IAccountService
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            IEnumerable<string> errors = new List<string> { "Invalid login attempt" };
+            IEnumerable<string> errors = new List<string> { "We couldn’t find your profile. Please ensure you've entered the correct information" };
             return Result.Failure(errors);
         }
 
@@ -41,6 +41,63 @@ public class AccountService : IAccountService
             user.ProfilePicture,
             user.LastLoginDate,
             user.EmailConfirmed
+        });
+    }
+
+    public async Task<Result> GenerateRecoveryCodesAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "We couldn’t find your profile. Please ensure you've entered the correct information" };
+            return Result.Failure(errors);
+        }
+
+        var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
+        if (!isTwoFactorEnabled)
+        {
+            IEnumerable<string> errors = new List<string> { "Cannot generate recovery codes because you do not have 2FA enabled." };
+            return Result.Failure(errors);
+        }
+
+        var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+        return Result.Success(new
+        {
+            recoveryCodes,
+            Message = "Your new 2FA recovery codes have been generated! Be sure to store them securely"
+        });
+    }
+
+    public async Task<Result> EnableAuthenticator(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "We couldn’t find your profile. Please ensure you are authenticated" };
+            return Result.Failure(errors);
+        }
+
+        var enable2fa = await _userManager.SetTwoFactorEnabledAsync(user, true);
+        if(!enable2fa.Succeeded)
+        {
+            IEnumerable<string> errors = new List<string> { "Cannot enable Two Factor Authentication. Please check your account settings and try again" };
+            return Result.Failure(errors);
+        }
+
+        bool generateToken = await _userManager.CountRecoveryCodesAsync(user) == 0;
+        if (generateToken)
+        {
+            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+            return Result.Success(new
+            {
+                recoveryCodes,
+                Message = "Your new 2FA recovery codes have been generated! Be sure to store them securely"
+            });
+        }
+
+        return Result.Success(new
+        {
+            Message = "Your account is now more secure! Two Factor Authentication has been enabled."
         });
     }
 }

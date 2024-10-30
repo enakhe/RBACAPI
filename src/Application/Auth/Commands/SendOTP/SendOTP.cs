@@ -49,7 +49,7 @@ public class SendOTPCommandHandler : IRequestHandler<SendOTPCommand, IActionResu
 
         return new OkObjectResult(new
         {
-            data = otpResponse
+            response = otpResponse
         });
     }
 }

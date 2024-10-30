@@ -10,4 +10,6 @@ namespace EcommerceAPI.Application.Common.Interfaces;
 public interface IAccountService
 {
     Task<Result> ProfileAsync(string userId);
+    Task<Result> GenerateRecoveryCodesAsync(string userId);
+    Task<Result> EnableAuthenticator(string userId);
 }
