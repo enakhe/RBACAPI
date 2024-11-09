@@ -206,6 +206,25 @@ public class IdentityService : IIdentityService
         });
     }
 
+    public async Task<Result> SendToken(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
+            return Result.Failure(errors);
+        }
+
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        return Result.Success(new
+        {
+            code,
+            Message = "Succesfully send token"
+        });
+    }
+
     public async Task<Result> VerifyEmailAsync(string email, string otp)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -216,7 +235,7 @@ public class IdentityService : IIdentityService
         }
 
         var userId = await _userManager.GetUserIdAsync(user);
-        var token = _httpContextAccessor.HttpContext!.Request.Cookies["Auth.JWT.AccessToken"];
+        var token = _httpContextAccessor.HttpContext!.Request.Cookies["Auth.JWT.OTPToken"];
         var otpData = _otpService.GetOtpCookieData(_httpContextAccessor.HttpContext);
         if (otpData == null)
         {
@@ -282,16 +301,34 @@ public class IdentityService : IIdentityService
         });
     }
 
-    public async Task<Result> LogOut(string userId)
+    public async Task<Result> ChangeEmail(string userId, string email)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        await _userManager.UpdateAsync(user!);
-        _httpContextAccessor!.HttpContext!.Response.Cookies.Delete("Auth.JWT.AccessToken");
-        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Auth.JWT.RefreshToken");
+        if (user == null)
+        {
+            IEnumerable<string> errors = new List<string> { "We couldn’t find your profile. Please ensure you are authenticated" };
+            return Result.Failure(errors);
+        }
+
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+
+        var result = await _userManager.ChangeEmailAsync(user, email, code);
+        if (!result.Succeeded)
+        {
+            return Result.Failure(result.Errors.Select(e => e.Description));
+        }
+
+        var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
+        if (!setUserNameResult.Succeeded)
+        {
+            return Result.Failure(result.Errors.Select(e => e.Description));
+        }
 
         return Result.Success(new
         {
-            Message = "Succesfully logged out user"
+            Message = "Succesfully changed email, kindly login"
         });
     }
 
@@ -314,6 +351,19 @@ public class IdentityService : IIdentityService
         return Result.Success(new
         {
             Message = "Succesfully changed password, you will be logged out shortly to reauthenticate"
+        });
+    }
+
+    public async Task<Result> LogOut(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        await _userManager.UpdateAsync(user!);
+        _httpContextAccessor!.HttpContext!.Response.Cookies.Delete("Auth.JWT.AccessToken");
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("Auth.JWT.RefreshToken");
+
+        return Result.Success(new
+        {
+            Message = "Succesfully logged out user"
         });
     }
 

@@ -9,7 +9,7 @@ namespace EcommerceAPI.Application.User.Commands.VerifyEmail;
 public record VerifyEmailCommand : IRequest<IActionResult>
 {
     [Required]
-    public required string code { get; set; }
+    public required string Code { get; set; }
 }
 
 public class VerifyEmailCommandValidator : AbstractValidator<VerifyEmailCommand>
@@ -44,7 +44,7 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, IAc
             });
         }
 
-        var verifyEmailResponse = await _identityService.VerifyEmailAsync(email, request.code);
+        var verifyEmailResponse = await _identityService.VerifyEmailAsync(email, request.Code);
         if (!verifyEmailResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
