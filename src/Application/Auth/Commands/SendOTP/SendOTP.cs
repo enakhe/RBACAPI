@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceAPI.Application.User.Commands.SendOTP;
 
-public record SendOTPCommand : IRequest<IActionResult>
-{
-
-}
+public record SendOTPCommand : IRequest<IActionResult>;
 
 public class SendOTPCommandValidator : AbstractValidator<SendOTPCommand>
 {
