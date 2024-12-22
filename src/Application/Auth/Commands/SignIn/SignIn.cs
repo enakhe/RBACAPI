@@ -21,12 +21,6 @@ public record SignInCommand : IRequest<IActionResult>
 
 public class SignInCommandValidator : AbstractValidator<SignInCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public SignInCommandValidator(IApplicationDbContext context)
-    {
-        _context = context;
-    }
 }
 
 public class SignInCommandHandler : IRequestHandler<SignInCommand, IActionResult>

@@ -1,7 +1,9 @@
-﻿using EcommerceAPI.Application.Account.Commands.Disable2FAuthentication;
+﻿using EcommerceAPI.Application.Account.Commands.ChangeEmail;
+using EcommerceAPI.Application.Account.Commands.Disable2FAuthentication;
 using EcommerceAPI.Application.Account.Commands.EnableAuthenticator;
 using EcommerceAPI.Application.Account.Commands.GenerateRecoveryCodes;
 using EcommerceAPI.Application.Account.Queries.Profile;
+using EcommerceAPI.Application.Auth.Commands.ChangePassword;
 using EcommerceAPI.Application.Common.Security;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +18,9 @@ public class Account : EndpointGroupBase
             .MapGet(UserProfile, "profile")
             .MapPost(EnableAuthenticator, "enable-2fa")
             .MapPost(Disable2FAuthentication, "disable-2fa")
-            .MapPost(GenerateRecoveryCodes, "generate-recovery-codes");
+            .MapPost(GenerateRecoveryCodes, "generate-recovery-codes")
+            .MapPost(ChangePassword, "change-password")
+            .MapPost(ChangeEmail, "change-email");
     }
  
     public Task<IActionResult> UserProfile(ISender sender)
@@ -27,6 +31,16 @@ public class Account : EndpointGroupBase
     public Task<IActionResult> GenerateRecoveryCodes(ISender sender)
     {
         return sender.Send(new GenerateRecoveryCodesCommand());
+    }
+
+    public Task<IActionResult> ChangeEmail(ISender sender, ChangeEmailCommand command)
+    {
+        return sender.Send(command);
+    }
+
+    public Task<IActionResult> ChangePassword(ISender sender, ChangePasswordCommand command)
+    {
+        return sender.Send(command);
     }
 
     public Task<IActionResult> EnableAuthenticator(ISender sender)

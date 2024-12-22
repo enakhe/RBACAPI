@@ -90,6 +90,72 @@
         }
       }
     },
+    "/api/Account/change-password": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "ChangePassword",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Account/change-email": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "ChangeEmail",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeEmailCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Auth/signin": {
       "post": {
         "tags": [
@@ -255,72 +321,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ResetPasswordCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Auth/change-email": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "operationId": "ChangeEmail",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangeEmailCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Auth/change-password": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "operationId": "ChangePassword",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangePasswordCommand"
               }
             }
           },
@@ -743,6 +743,46 @@
   },
   "components": {
     "schemas": {
+      "ChangePasswordCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "password",
+          "newPassword",
+          "confirmPassword"
+        ],
+        "properties": {
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          },
+          "newPassword": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          },
+          "confirmPassword": {
+            "title": "Confirm password",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "ChangeEmailCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          }
+        }
+      },
       "SignInCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -840,46 +880,6 @@
           "confirmPassword": {
             "title": "Confirm password",
             "type": "string"
-          }
-        }
-      },
-      "ChangeEmailCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "email"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "minLength": 1
-          }
-        }
-      },
-      "ChangePasswordCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "password",
-          "newPassword",
-          "confirmPassword"
-        ],
-        "properties": {
-          "password": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 6
-          },
-          "newPassword": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 6
-          },
-          "confirmPassword": {
-            "title": "Confirm password",
-            "type": "string",
-            "minLength": 1
           }
         }
       },

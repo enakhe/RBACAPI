@@ -310,7 +310,7 @@ public class IdentityService : IIdentityService
             return Result.Failure(errors);
         }
 
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var code = await _userManager.GenerateChangeEmailTokenAsync(user, email);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
@@ -323,7 +323,7 @@ public class IdentityService : IIdentityService
         var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
         if (!setUserNameResult.Succeeded)
         {
-            return Result.Failure(result.Errors.Select(e => e.Description));
+            return Result.Failure(setUserNameResult.Errors.Select(e => e.Description));
         }
 
         return Result.Success(new
