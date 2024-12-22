@@ -3,7 +3,7 @@ using EcommerceAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Auth.Commands.ChangeEmail;
+namespace EcommerceAPI.Application.Account.Commands.ChangeEmail;
 
 public record ChangeEmailCommand : IRequest<IActionResult>
 {
