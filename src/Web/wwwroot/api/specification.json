@@ -396,6 +396,39 @@
         }
       }
     },
+    "/api/OAuth/facebook": {
+      "post": {
+        "tags": [
+          "OAuth"
+        ],
+        "operationId": "FacebookSignIn",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacebookSignInCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [
@@ -891,6 +924,19 @@
         ],
         "properties": {
           "code": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "FacebookSignInCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accessToken"
+        ],
+        "properties": {
+          "accessToken": {
             "type": "string",
             "minLength": 1
           }

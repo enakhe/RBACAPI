@@ -42,7 +42,8 @@ public static class DependencyInjection
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options => {
+        }).AddJwtBearer(options =>
+        {
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -66,6 +67,10 @@ public static class DependencyInjection
         {
             googleOptions.ClientId = configuration["Authentication:Google:ClientId"]!;
             googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+        }).AddFacebook(facebookOptions =>
+        {
+             facebookOptions.AppId = configuration["Authentication:Facebook:AppId"]!;
+             facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"]!;
         });
 
 
@@ -87,6 +92,10 @@ public static class DependencyInjection
 
         services.AddTransient<IUserEmailStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
         services.AddTransient<IUserStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
+        services.AddHttpClient("Facebook", c =>
+        {
+            c.BaseAddress = new Uri(configuration.GetValue<string>("Facebook:BaseUrl")!);
+        });
 
         services.Configure<IdentityOptions>(options =>
         {
