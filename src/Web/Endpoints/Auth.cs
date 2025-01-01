@@ -9,6 +9,7 @@ using EcommerceAPI.Application.User.Commands.SendOTP;
 using EcommerceAPI.Application.User.Commands.SignUp;
 using EcommerceAPI.Application.User.Commands.VerifyEmail;
 using Microsoft.AspNetCore.Mvc;
+using EcommerceAPI.Application.Common.Models;
 
 namespace EcommerceAPI.Web.Endpoints;
 
@@ -31,7 +32,7 @@ public class Auth : EndpointGroupBase
         return send.Send(command);
     }
 
-    public Task<IActionResult> SignUp(ISender send, SignUpCommand command)
+    public Task<Result> SignUp(ISender send, SignUpCommand command)
     {
         return send.Send(command);
     }
