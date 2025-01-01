@@ -2,10 +2,11 @@
 using EcommerceAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using EcommerceAPI.Application.Common.Models;
 
 namespace EcommerceAPI.Application.User.Commands.SignUp;
 
-public record SignUpCommand : IRequest<IActionResult>
+public record SignUpCommand : IRequest<Result>
 {
     [Required, EmailAddress]
     public required string Email { get; set; }
@@ -51,7 +52,7 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
     }
 }
 
-public class SignUpCommandHandler : IRequestHandler<SignUpCommand, IActionResult>
+public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
 {
     private readonly IIdentityService _identityService;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -62,24 +63,18 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, IActionResult
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<IActionResult> Handle(SignUpCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
-        if (request == null)
-            return new BadRequestObjectResult("Invalid sign up request");
-
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            return new BadRequestObjectResult(new
-            {
-                error = signUpResponse.Errors
-            });
+            return Result.Failure(signUpResponse.Errors);
         }
 
-        return new OkObjectResult(new
+        return Result.Success(new
         {
-            data = signUpResponse
+            data = signUpResponse.Response
         });
     }
 }

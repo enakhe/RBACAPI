@@ -211,10 +211,9 @@
           "200": {
             "description": "",
             "content": {
-              "application/octet-stream": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/Result"
                 }
               }
             }
@@ -833,6 +832,22 @@
             "type": "string",
             "minLength": 1
           }
+        }
+      },
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "succeeded": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "response": {}
         }
       },
       "SignUpCommand": {

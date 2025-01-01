@@ -6,12 +6,12 @@ public class Result
     {
         Succeeded = succeeded;
         Errors = errors.ToArray();
-        Data = data;
+        Response = data;
     }
 
     public bool Succeeded { get; init; }
     public string[] Errors { get; init; }
-    public object Data { get; set; }
+    public object Response { get; set; }
 
     public static Result Success(object data)
     {
