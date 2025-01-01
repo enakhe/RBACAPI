@@ -33,7 +33,7 @@ public class LogOutCommandHandler : IRequestHandler<LogOutCommand, IActionResult
         var httpContext = _httpContextAccessor.HttpContext;
         var userId = httpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var logOutResponse = await _identityService.LogOut(userId!);
-        if(!logOutResponse.Succeeded)
+        if (!logOutResponse.Succeeded)
             return new BadRequestObjectResult("Invalid  request");
 
         return new OkObjectResult(new

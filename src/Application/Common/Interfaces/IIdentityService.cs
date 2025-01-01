@@ -1,12 +1,4 @@
-﻿using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
-using EcommerceAPI.Application.Auth.EventHandlers;
-using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Application.User.Commands.Login;
-using EcommerceAPI.Application.User.Commands.SendOTP;
-using EcommerceAPI.Application.User.Commands.SignUp;
-using EcommerceAPI.Application.User.Commands.VerifyEmail;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using EcommerceAPI.Application.Common.Models;
 
 namespace EcommerceAPI.Application.Common.Interfaces;
 

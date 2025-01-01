@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
-using EcommerceAPI.Application.Auth.EventHandlers;
-using EcommerceAPI.Application.Common.Exceptions;
+﻿using System.ComponentModel.DataAnnotations;
 using EcommerceAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

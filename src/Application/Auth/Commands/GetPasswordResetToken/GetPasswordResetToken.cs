@@ -47,7 +47,7 @@ public class GetPasswordResetTokenCommandHandler : IRequestHandler<GetPasswordRe
         }
 
         var getResetPasswordResponse = await _identityService.GetPasswordResetTokenAsync(request.Email);
-        if(!getResetPasswordResponse.Succeeded)
+        if (!getResetPasswordResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new

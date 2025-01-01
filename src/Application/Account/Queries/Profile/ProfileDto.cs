@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EcommerceAPI.Application.Account.Queries.Profile;
+﻿namespace EcommerceAPI.Application.Account.Queries.Profile;
 public class ProfileDto
 {
     public string? Id { get; set; }

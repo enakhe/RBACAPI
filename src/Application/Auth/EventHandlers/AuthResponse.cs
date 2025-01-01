@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EcommerceAPI.Application.Auth.EventHandlers;
+﻿namespace EcommerceAPI.Application.Auth.EventHandlers;
 public class AuthResponse
 {
     public string? Token { get; set; }
