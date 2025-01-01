@@ -20,6 +20,6 @@ public class Result
 
     public static Result Failure(IEnumerable<string> errors)
     {
-        return new Result(false, errors, new {});
+        return new Result(false, errors, new { });
     }
 }

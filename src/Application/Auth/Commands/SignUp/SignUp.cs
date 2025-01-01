@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.User.Commands.Login;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,8 +29,25 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
 
         RuleFor(x => x.Email)
             .EmailAddress()
+            .WithMessage("The email field must be a valid email address")
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("The email field is required");
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .NotNull()
+            .WithMessage("The password field is required")
+            .MinimumLength(6)
+            .WithMessage("The minimum length of the password must be more than six characters");
+
+        RuleFor(x => x.ConfirmPassword)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("The confirmation password field is required.")
+            .Matches(x => x.Password)
+            .WithMessage("The password and confirmation password do not match.");
+
     }
 }
 
@@ -50,12 +66,6 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, IActionResult
     {
         if (request == null)
             return new BadRequestObjectResult("Invalid sign up request");
-
-        if (request.Password != request.ConfirmPassword)
-            return new BadRequestObjectResult(new
-            {
-                error = "The new password and confirmation password do not match."
-            });
 
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
