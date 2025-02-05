@@ -35,7 +35,7 @@ public class SignUpTest : BaseTestFixture
         var result = await Testing.SendAsync(command);
 
         result.Should().NotBeNull();
-        result.Succeeded.Should().BeTrue();
+        result.Succeeded.Should().BeFalse();
         result.Errors.Should().Contain("The provided email is already used");
     }
 }

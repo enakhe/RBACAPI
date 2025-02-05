@@ -44,14 +44,14 @@ public class JWTRepository : IJWTService
 
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-        //context.Response.Cookies.Append($"Auth.JWT.{tokenName}", jwt, new CookieOptions()
-        //{
-        //    Expires = validTime,
-        //    HttpOnly = true,
-        //    Secure = true,
-        //    SameSite = SameSiteMode.Strict,
-        //    IsEssential = true
-        //});
+        context.Response.Cookies.Append($"Auth.JWT.{tokenName}", jwt, new CookieOptions()
+        {
+            Expires = validTime,
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            IsEssential = true
+        });
         return jwt;
     }
 

@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>EcommerceAPI.Infrastructure.IntegrationTests</RootNamespace>
-        <AssemblyName>EcommerceAPI.Infrastructure.IntegrationTests</AssemblyName>
+        <RootNamespace>RBACAPI.Infrastructure.IntegrationTests</RootNamespace>
+        <AssemblyName>RBACAPI.Infrastructure.IntegrationTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

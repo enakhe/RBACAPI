@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>EcommerceAPI.Infrastructure</RootNamespace>
-    <AssemblyName>EcommerceAPI.Infrastructure</AssemblyName>
+    <RootNamespace>RBACAPI.Infrastructure</RootNamespace>
+    <AssemblyName>RBACAPI.Infrastructure</AssemblyName>
     <UserSecretsId>de1a33ac-5534-40e7-91d6-58fce5ef15a3</UserSecretsId>
   </PropertyGroup>
 
