@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>EcommerceAPI.Domain.UnitTests</RootNamespace>
-        <AssemblyName>EcommerceAPI.Domain.UnitTests</AssemblyName>
+        <RootNamespace>RBACAPI.Domain.UnitTests</RootNamespace>
+        <AssemblyName>RBACAPI.Domain.UnitTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

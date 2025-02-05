@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>EcommerceAPI.Application.FunctionalTests</RootNamespace>
-        <AssemblyName>EcommerceAPI.Application.FunctionalTests</AssemblyName>
+        <RootNamespace>RBACAPI.Application.FunctionalTests</RootNamespace>
+        <AssemblyName>RBACAPI.Application.FunctionalTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

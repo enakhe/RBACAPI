@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>EcommerceAPI.Application</RootNamespace>
-    <AssemblyName>EcommerceAPI.Application</AssemblyName>
+    <RootNamespace>RBACAPI.Application</RootNamespace>
+    <AssemblyName>RBACAPI.Application</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
