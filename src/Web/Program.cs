@@ -1,7 +1,7 @@
 using System.Text;
-using EcommerceAPI.Infrastructure.Data;
-using EcommerceAPI.Infrastructure.Middleware;
-using EcommerceAPI.Web.Middleware;
+using RBACAPI.Infrastructure.Data;
+using RBACAPI.Infrastructure.Middleware;
+using RBACAPI.Web.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

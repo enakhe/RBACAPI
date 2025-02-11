@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Web.Services;
+﻿namespace RBACAPI.Web.Services;
 
 public class JWTService
 {

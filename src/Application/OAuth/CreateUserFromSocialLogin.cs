@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace EcommerceAPI.Application.OAuth;
+namespace RBACAPI.Application.OAuth;
 public class CreateUserFromSocialLogin
 {
     public string Email { get; set; }

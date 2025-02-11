@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
+﻿using RBACAPI.Application.Common.Interfaces;
 
-namespace EcommerceAPI.Application.TodoItems.Commands.UpdateTodoItem;
+namespace RBACAPI.Application.TodoItems.Commands.UpdateTodoItem;
 
 public record UpdateTodoItemCommand : IRequest
 {

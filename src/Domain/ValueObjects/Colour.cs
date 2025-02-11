@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.ValueObjects;
+﻿namespace RBACAPI.Domain.ValueObjects;
 
 public class Colour(string code) : ValueObject
 {

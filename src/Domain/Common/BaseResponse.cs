@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EcommerceAPI.Domain.Enums;
+using RBACAPI.Domain.Enums;
 using System.Threading.Tasks;
 
-namespace EcommerceAPI.Domain.Common;
+namespace RBACAPI.Domain.Common;
 public class BaseResponse<T>
 {
     public BaseResponse(T data, string responseMessage = null)

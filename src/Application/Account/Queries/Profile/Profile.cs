@@ -1,10 +1,10 @@
 ﻿using System.Security.Claims;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Security;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Account.Queries.Profile;
+namespace RBACAPI.Application.Account.Queries.Profile;
 
 [Authorize]
 public record ProfileQuery : IRequest<IActionResult>;

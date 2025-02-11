@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.TodoItems.Commands.UpdateTodoItem;
+﻿namespace RBACAPI.Application.TodoItems.Commands.UpdateTodoItem;
 
 public class UpdateTodoItemCommandValidator : AbstractValidator<UpdateTodoItemCommand>
 {

@@ -1,9 +1,9 @@
-﻿using EcommerceAPI.Domain.Exceptions;
-using EcommerceAPI.Domain.ValueObjects;
+﻿using RBACAPI.Domain.Exceptions;
+using RBACAPI.Domain.ValueObjects;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace EcommerceAPI.Domain.UnitTests.ValueObjects;
+namespace RBACAPI.Domain.UnitTests.ValueObjects;
 
 public class ColourTests
 {

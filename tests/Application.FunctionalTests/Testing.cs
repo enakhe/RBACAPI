@@ -1,12 +1,12 @@
-﻿using EcommerceAPI.Domain.Constants;
-using EcommerceAPI.Infrastructure.Data;
-using EcommerceAPI.Infrastructure.Identity;
+﻿using RBACAPI.Domain.Constants;
+using RBACAPI.Infrastructure.Data;
+using RBACAPI.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EcommerceAPI.Application.FunctionalTests;
+namespace RBACAPI.Application.FunctionalTests;
 
 [SetUpFixture]
 public partial class Testing

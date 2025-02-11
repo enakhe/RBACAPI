@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace EcommerceAPI.Web.Infrastructure;
+namespace RBACAPI.Web.Infrastructure;
 
 public static class WebApplicationExtensions
 {

@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.Common.Models;
+﻿namespace RBACAPI.Application.Common.Models;
 
 public class PaginatedList<T>
 {

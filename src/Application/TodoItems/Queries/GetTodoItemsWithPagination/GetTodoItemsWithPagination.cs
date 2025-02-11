@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Mappings;
-using EcommerceAPI.Application.Common.Models;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Mappings;
+using RBACAPI.Application.Common.Models;
 
-namespace EcommerceAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+namespace RBACAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 public record GetTodoItemsWithPaginationQuery : IRequest<PaginatedList<TodoItemBriefDto>>
 {

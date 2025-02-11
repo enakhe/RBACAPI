@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.User.Commands.Login;
+namespace RBACAPI.Application.User.Commands.Login;
 
 public record SignInCommand : IRequest<IActionResult>
 {

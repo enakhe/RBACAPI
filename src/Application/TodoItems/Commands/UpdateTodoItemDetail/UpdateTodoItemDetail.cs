@@ -1,7 +1,7 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Domain.Enums;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Domain.Enums;
 
-namespace EcommerceAPI.Application.TodoItems.Commands.UpdateTodoItemDetail;
+namespace RBACAPI.Application.TodoItems.Commands.UpdateTodoItemDetail;
 
 public record UpdateTodoItemDetailCommand : IRequest
 {

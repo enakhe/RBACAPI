@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.Common.Interfaces;
+﻿namespace RBACAPI.Application.Common.Interfaces;
 public interface IUser
 {
     string? Id { get; }

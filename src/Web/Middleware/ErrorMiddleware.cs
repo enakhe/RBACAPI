@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace EcommerceAPI.Web.Middleware
+namespace RBACAPI.Web.Middleware
 {
     public class ErrorMiddleware
     {

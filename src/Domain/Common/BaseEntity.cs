@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EcommerceAPI.Domain.Common;
+namespace RBACAPI.Domain.Common;
 
 public abstract class BaseEntity
 {

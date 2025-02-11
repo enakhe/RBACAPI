@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
+namespace RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
 
 public record GetPasswordResetTokenCommand : IRequest<IActionResult>
 {

@@ -1,6 +1,6 @@
-﻿using ValidationException = EcommerceAPI.Application.Common.Exceptions.ValidationException;
+﻿using ValidationException = RBACAPI.Application.Common.Exceptions.ValidationException;
 
-namespace EcommerceAPI.Application.Common.Behaviours;
+namespace RBACAPI.Application.Common.Behaviours;
 
 public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
      where TRequest : notnull

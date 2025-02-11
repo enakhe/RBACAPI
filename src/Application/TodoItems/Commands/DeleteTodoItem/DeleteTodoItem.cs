@@ -1,7 +1,7 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Domain.Events;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Domain.Events;
 
-namespace EcommerceAPI.Application.TodoItems.Commands.DeleteTodoItem;
+namespace RBACAPI.Application.TodoItems.Commands.DeleteTodoItem;
 
 public record DeleteTodoItemCommand(int Id) : IRequest;
 

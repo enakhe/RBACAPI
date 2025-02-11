@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.OAuth.Commands.GoogleSignIn;
+namespace RBACAPI.Application.OAuth.Commands.GoogleSignIn;
 
 public record GoogleSignInCommand : IRequest<IActionResult>
 {

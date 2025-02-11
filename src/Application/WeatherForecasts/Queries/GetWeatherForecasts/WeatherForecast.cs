@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+﻿namespace RBACAPI.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 
 public class WeatherForecast
 {

@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
+﻿using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Account.Commands.Disable2FAuthentication;
+namespace RBACAPI.Application.Account.Commands.Disable2FAuthentication;
 
 public record Disable2FAuthenticationCommand : IRequest<IActionResult>;
 

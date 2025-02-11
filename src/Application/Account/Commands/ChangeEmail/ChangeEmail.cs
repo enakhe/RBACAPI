@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Account.Commands.ChangeEmail;
+namespace RBACAPI.Application.Account.Commands.ChangeEmail;
 
 public record ChangeEmailCommand : IRequest<IActionResult>
 {

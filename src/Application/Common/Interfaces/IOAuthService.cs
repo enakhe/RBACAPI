@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Application.OAuth.Commands.FacebookSignIn;
-using EcommerceAPI.Application.OAuth.Commands.GoogleSignIn;
-using EcommerceAPI.Domain.Common;
+﻿using RBACAPI.Application.OAuth.Commands.FacebookSignIn;
+using RBACAPI.Application.OAuth.Commands.GoogleSignIn;
+using RBACAPI.Domain.Common;
 
-namespace EcommerceAPI.Application.Common.Interfaces;
+namespace RBACAPI.Application.Common.Interfaces;
 public interface IOAuthService
 {
     Task<GoogleSignInResponse> GoogleSignIn(string code);

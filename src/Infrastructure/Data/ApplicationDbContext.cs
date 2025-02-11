@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Domain.Entities;
-using EcommerceAPI.Infrastructure.Identity;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Domain.Entities;
+using RBACAPI.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace EcommerceAPI.Infrastructure.Data;
+namespace RBACAPI.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {

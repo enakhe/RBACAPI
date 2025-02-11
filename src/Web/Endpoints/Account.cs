@@ -1,13 +1,13 @@
-﻿using EcommerceAPI.Application.Account.Commands.ChangeEmail;
-using EcommerceAPI.Application.Account.Commands.Disable2FAuthentication;
-using EcommerceAPI.Application.Account.Commands.EnableAuthenticator;
-using EcommerceAPI.Application.Account.Commands.GenerateRecoveryCodes;
-using EcommerceAPI.Application.Account.Queries.Profile;
-using EcommerceAPI.Application.Auth.Commands.ChangePassword;
-using EcommerceAPI.Application.Common.Security;
+﻿using RBACAPI.Application.Account.Commands.ChangeEmail;
+using RBACAPI.Application.Account.Commands.Disable2FAuthentication;
+using RBACAPI.Application.Account.Commands.EnableAuthenticator;
+using RBACAPI.Application.Account.Commands.GenerateRecoveryCodes;
+using RBACAPI.Application.Account.Queries.Profile;
+using RBACAPI.Application.Auth.Commands.ChangePassword;
+using RBACAPI.Application.Common.Security;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Web.Endpoints;
+namespace RBACAPI.Web.Endpoints;
 
 [AuthorizeUser]
 public class Account : EndpointGroupBase

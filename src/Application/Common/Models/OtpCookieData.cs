@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace EcommerceAPI.Application.Common.Models;
+namespace RBACAPI.Application.Common.Models;
 public class OtpCookieData
 {
     public string Otp { get; set; }

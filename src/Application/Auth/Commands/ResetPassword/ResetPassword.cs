@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Auth.Commands.ResetPassword;
+namespace RBACAPI.Application.Auth.Commands.ResetPassword;
 
 public record ResetPasswordCommand : IRequest<IActionResult>
 {

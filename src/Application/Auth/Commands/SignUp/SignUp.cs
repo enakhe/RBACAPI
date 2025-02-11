@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using EcommerceAPI.Application.Common.Models;
+using RBACAPI.Application.Common.Models;
 
-namespace EcommerceAPI.Application.User.Commands.SignUp;
+namespace RBACAPI.Application.User.Commands.SignUp;
 
 public record SignUpCommand : IRequest<Result>
 {

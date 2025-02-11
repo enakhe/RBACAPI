@@ -1,10 +1,10 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Domain.Common;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace EcommerceAPI.Infrastructure.Data.Interceptors;
+namespace RBACAPI.Infrastructure.Data.Interceptors;
 
 public class AuditableEntityInterceptor : SaveChangesInterceptor
 {

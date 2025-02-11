@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.Account.Queries.Profile;
+﻿namespace RBACAPI.Application.Account.Queries.Profile;
 public class ProfileDto
 {
     public string? Id { get; set; }

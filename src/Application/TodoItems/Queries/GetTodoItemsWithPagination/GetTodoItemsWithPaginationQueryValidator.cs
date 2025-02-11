@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+﻿namespace RBACAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 public class GetTodoItemsWithPaginationQueryValidator : AbstractValidator<GetTodoItemsWithPaginationQuery>
 {

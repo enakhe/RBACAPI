@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.Events;
+﻿namespace RBACAPI.Domain.Events;
 
 public class TodoItemDeletedEvent : BaseEvent
 {

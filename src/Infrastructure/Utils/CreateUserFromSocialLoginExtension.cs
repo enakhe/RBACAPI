@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Infrastructure.Data;
-using EcommerceAPI.Infrastructure.Identity;
-using EcommerceAPI.Application.OAuth;
-using EcommerceAPI.Domain.Enums;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Infrastructure.Data;
+using RBACAPI.Infrastructure.Identity;
+using RBACAPI.Application.OAuth;
+using RBACAPI.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
-namespace EcommerceAPI.Infrastructure.Utils;
+namespace RBACAPI.Infrastructure.Utils;
 public static class CreateUserFromSocialLoginExtension
 {
     /// <summary>

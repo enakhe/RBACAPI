@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
+﻿using RBACAPI.Application.Common.Interfaces;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace EcommerceAPI.Application.Common.Behaviours;
+namespace RBACAPI.Application.Common.Behaviours;
 
 public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
 {
@@ -28,7 +28,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
             userName = await _identityService.GetUserNameAsync(userId);
         }
 
-        _logger.LogInformation("EcommerceAPI Request: {Name} {@UserId} {@UserName} {@Request}",
+        _logger.LogInformation("RBACAPI Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);
     }
 }

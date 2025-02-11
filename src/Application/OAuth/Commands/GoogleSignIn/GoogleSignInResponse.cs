@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace EcommerceAPI.Application.OAuth.Commands.GoogleSignIn;
+namespace RBACAPI.Application.OAuth.Commands.GoogleSignIn;
 public class GoogleSignInResponse
 {
     public bool Succeeded { get; set; }

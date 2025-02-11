@@ -1,7 +1,7 @@
-﻿using EcommerceAPI.Application.Common.Models;
+﻿using RBACAPI.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace EcommerceAPI.Infrastructure.Identity;
+namespace RBACAPI.Infrastructure.Identity;
 
 public static class IdentityResultExtensions
 {

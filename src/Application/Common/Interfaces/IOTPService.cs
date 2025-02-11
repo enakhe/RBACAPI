@@ -1,7 +1,7 @@
-﻿using EcommerceAPI.Application.Common.Models;
+﻿using RBACAPI.Application.Common.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace EcommerceAPI.Application.Common.Interfaces;
+namespace RBACAPI.Application.Common.Interfaces;
 public interface IOTPService
 {
     string GenerateOTP(string userId, string email, string token, DateTime expiryDate);

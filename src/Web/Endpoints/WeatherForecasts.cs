@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+﻿using RBACAPI.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 
-namespace EcommerceAPI.Web.Endpoints;
+namespace RBACAPI.Web.Endpoints;
 
 public class WeatherForecasts : EndpointGroupBase
 {

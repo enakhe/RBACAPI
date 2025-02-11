@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Domain.Entities;
+﻿using RBACAPI.Domain.Entities;
 
-namespace EcommerceAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+namespace RBACAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 public class TodoItemBriefDto
 {

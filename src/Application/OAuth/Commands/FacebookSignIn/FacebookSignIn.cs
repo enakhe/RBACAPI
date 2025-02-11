@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.OAuth.Commands.FacebookSignIn;
+namespace RBACAPI.Application.OAuth.Commands.FacebookSignIn;
 
 public record FacebookSignInCommand : IRequest<IActionResult>
 {

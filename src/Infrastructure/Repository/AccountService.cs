@@ -5,12 +5,12 @@ using System.Security.Claims;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Infrastructure.Identity;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 
-namespace EcommerceAPI.Infrastructure.Repository;
+namespace RBACAPI.Infrastructure.Repository;
 public class AccountService : IAccountService
 {
     private readonly UserManager<ApplicationUser> _userManager;

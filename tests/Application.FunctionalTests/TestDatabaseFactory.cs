@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.FunctionalTests;
+﻿namespace RBACAPI.Application.FunctionalTests;
 
 public static class TestDatabaseFactory
 {

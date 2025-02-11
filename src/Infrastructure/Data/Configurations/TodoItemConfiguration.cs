@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Domain.Entities;
+﻿using RBACAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EcommerceAPI.Infrastructure.Data.Configurations;
+namespace RBACAPI.Infrastructure.Data.Configurations;
 
 public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
 {

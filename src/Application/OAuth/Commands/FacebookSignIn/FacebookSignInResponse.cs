@@ -1,5 +1,5 @@
 ﻿#nullable disable
-namespace EcommerceAPI.Application.OAuth.Commands.FacebookSignIn;
+namespace RBACAPI.Application.OAuth.Commands.FacebookSignIn;
 public class FacebookSignInResponse
 {
     public bool Succeeded { get; set; }

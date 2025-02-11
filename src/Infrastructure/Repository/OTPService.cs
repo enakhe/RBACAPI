@@ -7,13 +7,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.Extensions.Configuration;
-using EcommerceAPI.Application.User.Commands.VerifyEmail;
-using EcommerceAPI.Application.Common.Models;
+using RBACAPI.Application.User.Commands.VerifyEmail;
+using RBACAPI.Application.Common.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace EcommerceAPI.Infrastructure.Repository;
+namespace RBACAPI.Infrastructure.Repository;
 public class OTPService : IOTPService
 {
     private readonly IConfiguration configuration;

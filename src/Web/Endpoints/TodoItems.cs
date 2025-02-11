@@ -1,12 +1,12 @@
-﻿using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Application.Common.Security;
-using EcommerceAPI.Application.TodoItems.Commands.CreateTodoItem;
-using EcommerceAPI.Application.TodoItems.Commands.DeleteTodoItem;
-using EcommerceAPI.Application.TodoItems.Commands.UpdateTodoItem;
-using EcommerceAPI.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using EcommerceAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+﻿using RBACAPI.Application.Common.Models;
+using RBACAPI.Application.Common.Security;
+using RBACAPI.Application.TodoItems.Commands.CreateTodoItem;
+using RBACAPI.Application.TodoItems.Commands.DeleteTodoItem;
+using RBACAPI.Application.TodoItems.Commands.UpdateTodoItem;
+using RBACAPI.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using RBACAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
-namespace EcommerceAPI.Web.Endpoints;
+namespace RBACAPI.Web.Endpoints;
 
 public class TodoItems : EndpointGroupBase
 {

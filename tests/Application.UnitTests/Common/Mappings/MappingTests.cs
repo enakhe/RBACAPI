@@ -1,14 +1,14 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using AutoMapper;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using EcommerceAPI.Application.TodoLists.Queries.GetTodos;
-using EcommerceAPI.Domain.Entities;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using RBACAPI.Application.TodoLists.Queries.GetTodos;
+using RBACAPI.Domain.Entities;
 using NUnit.Framework;
 
-namespace EcommerceAPI.Application.UnitTests.Common.Mappings;
+namespace RBACAPI.Application.UnitTests.Common.Mappings;
 
 public class MappingTests
 {

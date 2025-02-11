@@ -1,14 +1,14 @@
 ﻿using System.Runtime.InteropServices;
-using EcommerceAPI.Domain.Constants;
-using EcommerceAPI.Domain.Entities;
-using EcommerceAPI.Infrastructure.Identity;
+using RBACAPI.Domain.Constants;
+using RBACAPI.Domain.Entities;
+using RBACAPI.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace EcommerceAPI.Infrastructure.Data;
+namespace RBACAPI.Infrastructure.Data;
 
 public static class InitialiserExtensions
 {

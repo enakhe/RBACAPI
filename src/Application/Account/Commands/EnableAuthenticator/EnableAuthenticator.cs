@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Account.Commands.EnableAuthenticator;
+namespace RBACAPI.Application.Account.Commands.EnableAuthenticator;
 
 public record EnableAuthenticatorCommand : IRequest<IActionResult>;
 

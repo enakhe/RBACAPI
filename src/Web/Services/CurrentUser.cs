@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 
-namespace EcommerceAPI.Web.Services;
+namespace RBACAPI.Web.Services;
 
 public class CurrentUser : IUser
 {

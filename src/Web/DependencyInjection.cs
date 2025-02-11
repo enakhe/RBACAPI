@@ -1,7 +1,7 @@
 ﻿using Azure.Identity;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Infrastructure.Data;
-using EcommerceAPI.Web.Services;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Infrastructure.Data;
+using RBACAPI.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 using NSwag;
@@ -34,7 +34,7 @@ public static class DependencyInjection
 
         services.AddOpenApiDocument((configure, sp) =>
         {
-            configure.Title = "EcommerceAPI API";
+            configure.Title = "RBACAPI API";
 
             // Add JWT
             configure.AddSecurity("Auth.JWT.AccessToken", Enumerable.Empty<string>(), new OpenApiSecurityScheme

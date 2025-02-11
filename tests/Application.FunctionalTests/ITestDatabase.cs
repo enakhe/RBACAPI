@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace EcommerceAPI.Application.FunctionalTests;
+namespace RBACAPI.Application.FunctionalTests;
 
 public interface ITestDatabase
 {

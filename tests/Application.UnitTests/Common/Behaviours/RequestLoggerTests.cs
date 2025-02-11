@@ -1,11 +1,11 @@
-﻿using EcommerceAPI.Application.Common.Behaviours;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.TodoItems.Commands.CreateTodoItem;
+﻿using RBACAPI.Application.Common.Behaviours;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.TodoItems.Commands.CreateTodoItem;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
-namespace EcommerceAPI.Application.UnitTests.Common.Behaviours;
+namespace RBACAPI.Application.UnitTests.Common.Behaviours;
 
 public class RequestLoggerTests
 {

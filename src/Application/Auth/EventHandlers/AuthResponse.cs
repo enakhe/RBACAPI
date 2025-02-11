@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.Auth.EventHandlers;
+﻿namespace RBACAPI.Application.Auth.EventHandlers;
 public class AuthResponse
 {
     public string? Token { get; set; }

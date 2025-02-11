@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Models;
+﻿using RBACAPI.Application.Common.Models;
 
-namespace EcommerceAPI.Application.Common.Interfaces;
+namespace RBACAPI.Application.Common.Interfaces;
 
 public interface IIdentityService
 {

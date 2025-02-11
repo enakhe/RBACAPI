@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-using EcommerceAPI.Application.Common.Exceptions;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Security;
+using RBACAPI.Application.Common.Exceptions;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Security;
 
-namespace EcommerceAPI.Application.Common.Behaviours;
+namespace RBACAPI.Application.Common.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {

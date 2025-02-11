@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Web.Infrastructure;
+﻿namespace RBACAPI.Web.Infrastructure;
 
 public abstract class EndpointGroupBase
 {

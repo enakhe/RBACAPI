@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EcommerceAPI.Infrastructure.Data.Migrations
+namespace RBACAPI.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class LastloginAdded : Migration

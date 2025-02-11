@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
+﻿using RBACAPI.Application.Common.Interfaces;
 
-namespace EcommerceAPI.Application.TodoLists.Commands.CreateTodoList;
+namespace RBACAPI.Application.TodoLists.Commands.CreateTodoList;
 
 public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCommand>
 {

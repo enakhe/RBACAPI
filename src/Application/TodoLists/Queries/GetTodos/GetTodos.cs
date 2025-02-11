@@ -1,9 +1,9 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Application.Common.Security;
-using EcommerceAPI.Domain.Enums;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Application.Common.Security;
+using RBACAPI.Domain.Enums;
 
-namespace EcommerceAPI.Application.TodoLists.Queries.GetTodos;
+namespace RBACAPI.Application.TodoLists.Queries.GetTodos;
 
 [Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;

@@ -1,15 +1,15 @@
 using System.Security.Claims;
 using System.Text;
-using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
-using EcommerceAPI.Application.Auth.EventHandlers;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Application.User.Commands.Login;
-using EcommerceAPI.Application.User.Commands.SendOTP;
-using EcommerceAPI.Application.User.Commands.SignUp;
-using EcommerceAPI.Application.User.Commands.VerifyEmail;
-using EcommerceAPI.Infrastructure.Interface;
-using EcommerceAPI.Infrastructure.Repository;
+using RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
+using RBACAPI.Application.Auth.EventHandlers;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Application.User.Commands.Login;
+using RBACAPI.Application.User.Commands.SendOTP;
+using RBACAPI.Application.User.Commands.SignUp;
+using RBACAPI.Application.User.Commands.VerifyEmail;
+using RBACAPI.Infrastructure.Interface;
+using RBACAPI.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RBACAPI.Infrastructure.Repository;
 
-namespace EcommerceAPI.Infrastructure.Identity;
+namespace RBACAPI.Infrastructure.Identity;
 
 public class IdentityService : IIdentityService
 {

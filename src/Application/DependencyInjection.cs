@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using EcommerceAPI.Application.Common.Behaviours;
+using RBACAPI.Application.Common.Behaviours;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

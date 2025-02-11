@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Models;
+﻿using RBACAPI.Application.Common.Models;
 
-namespace EcommerceAPI.Application.TodoLists.Queries.GetTodos;
+namespace RBACAPI.Application.TodoLists.Queries.GetTodos;
 
 public class TodosVm
 {

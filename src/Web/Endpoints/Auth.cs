@@ -1,17 +1,17 @@
-﻿using EcommerceAPI.Application.Account.Commands.ChangeEmail;
-using EcommerceAPI.Application.Auth.Commands.ChangePassword;
-using EcommerceAPI.Application.Auth.Commands.GetPasswordResetToken;
-using EcommerceAPI.Application.Auth.Commands.LogOut;
-using EcommerceAPI.Application.Auth.Commands.ResetPassword;
-using EcommerceAPI.Application.Common.Security;
-using EcommerceAPI.Application.User.Commands.Login;
-using EcommerceAPI.Application.User.Commands.SendOTP;
-using EcommerceAPI.Application.User.Commands.SignUp;
-using EcommerceAPI.Application.User.Commands.VerifyEmail;
+﻿using RBACAPI.Application.Account.Commands.ChangeEmail;
+using RBACAPI.Application.Auth.Commands.ChangePassword;
+using RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
+using RBACAPI.Application.Auth.Commands.LogOut;
+using RBACAPI.Application.Auth.Commands.ResetPassword;
+using RBACAPI.Application.Common.Security;
+using RBACAPI.Application.User.Commands.Login;
+using RBACAPI.Application.User.Commands.SendOTP;
+using RBACAPI.Application.User.Commands.SignUp;
+using RBACAPI.Application.User.Commands.VerifyEmail;
 using Microsoft.AspNetCore.Mvc;
-using EcommerceAPI.Application.Common.Models;
+using RBACAPI.Application.Common.Models;
 
-namespace EcommerceAPI.Web.Endpoints;
+namespace RBACAPI.Web.Endpoints;
 
 public class Auth : EndpointGroupBase
 {

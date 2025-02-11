@@ -1,9 +1,9 @@
-﻿using EcommerceAPI.Domain.Common;
+﻿using RBACAPI.Domain.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace EcommerceAPI.Infrastructure.Data.Interceptors;
+namespace RBACAPI.Infrastructure.Data.Interceptors;
 
 public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
 {

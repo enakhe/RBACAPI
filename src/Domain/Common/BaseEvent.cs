@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace EcommerceAPI.Domain.Common;
+namespace RBACAPI.Domain.Common;
 
 public abstract class BaseEvent : INotification
 {

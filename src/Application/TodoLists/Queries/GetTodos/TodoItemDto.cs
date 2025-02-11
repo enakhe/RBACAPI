@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Domain.Entities;
+﻿using RBACAPI.Domain.Entities;
 
-namespace EcommerceAPI.Application.TodoLists.Queries.GetTodos;
+namespace RBACAPI.Application.TodoLists.Queries.GetTodos;
 
 public class TodoItemDto
 {

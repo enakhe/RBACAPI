@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Auth.Commands.LogOut;
+namespace RBACAPI.Application.Auth.Commands.LogOut;
 
 public record LogOutCommand : IRequest<IActionResult>
 {

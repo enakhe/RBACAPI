@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Application.Common.Exceptions;
+﻿namespace RBACAPI.Application.Common.Exceptions;
 
 public class ForbiddenAccessException : Exception
 {

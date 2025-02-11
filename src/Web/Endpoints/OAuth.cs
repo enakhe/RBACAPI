@@ -1,9 +1,9 @@
 ﻿
-using EcommerceAPI.Application.OAuth.Commands.FacebookSignIn;
-using EcommerceAPI.Application.OAuth.Commands.GoogleSignIn;
+using RBACAPI.Application.OAuth.Commands.FacebookSignIn;
+using RBACAPI.Application.OAuth.Commands.GoogleSignIn;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Web.Endpoints;
+namespace RBACAPI.Web.Endpoints;
 
 public class OAuth : EndpointGroupBase
 {

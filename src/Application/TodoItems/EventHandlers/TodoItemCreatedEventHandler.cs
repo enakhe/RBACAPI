@@ -1,7 +1,7 @@
-﻿using EcommerceAPI.Domain.Events;
+﻿using RBACAPI.Domain.Events;
 using Microsoft.Extensions.Logging;
 
-namespace EcommerceAPI.Application.TodoItems.EventHandlers;
+namespace RBACAPI.Application.TodoItems.EventHandlers;
 
 public class TodoItemCreatedEventHandler : INotificationHandler<TodoItemCreatedEvent>
 {
@@ -14,7 +14,7 @@ public class TodoItemCreatedEventHandler : INotificationHandler<TodoItemCreatedE
 
     public Task Handle(TodoItemCreatedEvent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("EcommerceAPI Domain Event: {DomainEvent}", notification.GetType().Name);
+        _logger.LogInformation("RBACAPI Domain Event: {DomainEvent}", notification.GetType().Name);
 
         return Task.CompletedTask;
     }

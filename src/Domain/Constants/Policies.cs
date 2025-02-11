@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.Constants;
+﻿namespace RBACAPI.Domain.Constants;
 
 public abstract class Policies
 {

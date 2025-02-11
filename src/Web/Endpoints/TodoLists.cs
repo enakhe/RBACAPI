@@ -1,9 +1,9 @@
-﻿using EcommerceAPI.Application.TodoLists.Commands.CreateTodoList;
-using EcommerceAPI.Application.TodoLists.Commands.DeleteTodoList;
-using EcommerceAPI.Application.TodoLists.Commands.UpdateTodoList;
-using EcommerceAPI.Application.TodoLists.Queries.GetTodos;
+﻿using RBACAPI.Application.TodoLists.Commands.CreateTodoList;
+using RBACAPI.Application.TodoLists.Commands.DeleteTodoList;
+using RBACAPI.Application.TodoLists.Commands.UpdateTodoList;
+using RBACAPI.Application.TodoLists.Queries.GetTodos;
 
-namespace EcommerceAPI.Web.Endpoints;
+namespace RBACAPI.Web.Endpoints;
 
 public class TodoLists : EndpointGroupBase
 {

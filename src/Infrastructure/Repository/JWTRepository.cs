@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Infrastructure.Identity;
-using EcommerceAPI.Infrastructure.Interface;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Infrastructure.Identity;
+using RBACAPI.Infrastructure.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace EcommerceAPI.Infrastructure.Repository;
+namespace RBACAPI.Infrastructure.Repository;
 
 public class JWTRepository : IJWTService
 {

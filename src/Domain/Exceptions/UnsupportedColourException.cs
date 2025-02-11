@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.Exceptions;
+﻿namespace RBACAPI.Domain.Exceptions;
 
 public class UnsupportedColourException : Exception
 {

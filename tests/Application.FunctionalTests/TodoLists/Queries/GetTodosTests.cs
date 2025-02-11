@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Application.TodoLists.Queries.GetTodos;
-using EcommerceAPI.Domain.Entities;
-using EcommerceAPI.Domain.ValueObjects;
+﻿using RBACAPI.Application.TodoLists.Queries.GetTodos;
+using RBACAPI.Domain.Entities;
+using RBACAPI.Domain.ValueObjects;
 
-namespace EcommerceAPI.Application.FunctionalTests.TodoLists.Queries;
+namespace RBACAPI.Application.FunctionalTests.TodoLists.Queries;
 
 using static Testing;
 

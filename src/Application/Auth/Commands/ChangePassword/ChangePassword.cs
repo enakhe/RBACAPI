@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using EcommerceAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceAPI.Application.Auth.Commands.ChangePassword;
+namespace RBACAPI.Application.Auth.Commands.ChangePassword;
 
 public record ChangePasswordCommand : IRequest<IActionResult>
 {

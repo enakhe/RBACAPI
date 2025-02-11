@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.Entities;
+﻿namespace RBACAPI.Domain.Entities;
 
 public class TodoItem : BaseAuditableEntity
 {

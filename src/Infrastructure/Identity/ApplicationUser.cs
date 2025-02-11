@@ -1,9 +1,9 @@
 ﻿#nullable disable
 
-using EcommerceAPI.Domain.Enums;
+using RBACAPI.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
-namespace EcommerceAPI.Infrastructure.Identity;
+namespace RBACAPI.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser
 {

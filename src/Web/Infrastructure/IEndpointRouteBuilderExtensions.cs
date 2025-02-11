@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace EcommerceAPI.Web.Infrastructure;
+namespace RBACAPI.Web.Infrastructure;
 
 public static class IEndpointRouteBuilderExtensions
 {

@@ -1,3 +1,3 @@
 global using Ardalis.GuardClauses;
-global using EcommerceAPI.Web.Infrastructure;
+global using RBACAPI.Web.Infrastructure;
 global using MediatR;

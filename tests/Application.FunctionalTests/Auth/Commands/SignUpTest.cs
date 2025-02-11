@@ -5,13 +5,13 @@ using Moq;
 using NUnit.Framework;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
-using EcommerceAPI.Infrastructure.Identity;
-using EcommerceAPI.Application.Common.Models;
-using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Infrastructure.Interface;
+using RBACAPI.Infrastructure.Identity;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Infrastructure.Interface;
 using Microsoft.AspNetCore.Authorization;
 
-namespace EcommerceAPI.Application.FunctionalTests.Auth.Commands
+namespace RBACAPI.Application.FunctionalTests.Auth.Commands
 {
     [TestFixture]
     public class SignUpTest

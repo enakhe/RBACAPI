@@ -1,6 +1,6 @@
-﻿using EcommerceAPI.Application.Common.Models;
+﻿using RBACAPI.Application.Common.Models;
 
-namespace EcommerceAPI.Application.Common.Mappings;
+namespace RBACAPI.Application.Common.Mappings;
 
 public static class MappingExtensions
 {

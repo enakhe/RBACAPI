@@ -1,6 +1,6 @@
-﻿# EcommerceAPI
+﻿# RBACAPI
 
-The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/EcommerceAPI) version 8.0.5.
+The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/RBACAPI) version 8.0.5.
 
 ## Build
 

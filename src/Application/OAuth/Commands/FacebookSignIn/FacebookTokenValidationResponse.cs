@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using Newtonsoft.Json;
 
-namespace EcommerceAPI.Application.OAuth.Commands.FacebookSignIn;
+namespace RBACAPI.Application.OAuth.Commands.FacebookSignIn;
 public class FacebookTokenValidationResponse
 {
     [JsonProperty("data")]

@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.Common;
+﻿namespace RBACAPI.Domain.Common;
 
 public abstract class BaseAuditableEntity : BaseEntity
 {

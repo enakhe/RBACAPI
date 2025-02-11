@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceAPI.Domain.Enums;
+namespace RBACAPI.Domain.Enums;
 public static class LoginProviderExtensions
 {
     public static string GetDisplayName(this LoginProvider provider)

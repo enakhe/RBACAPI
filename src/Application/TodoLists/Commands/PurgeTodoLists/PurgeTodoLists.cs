@@ -1,8 +1,8 @@
-﻿using EcommerceAPI.Application.Common.Interfaces;
-using EcommerceAPI.Application.Common.Security;
-using EcommerceAPI.Domain.Constants;
+﻿using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Security;
+using RBACAPI.Domain.Constants;
 
-namespace EcommerceAPI.Application.TodoLists.Commands.PurgeTodoLists;
+namespace RBACAPI.Application.TodoLists.Commands.PurgeTodoLists;
 
 [Authorize(Roles = Roles.Administrator)]
 [Authorize(Policy = Policies.CanPurge)]

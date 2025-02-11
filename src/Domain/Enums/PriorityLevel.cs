@@ -1,4 +1,4 @@
-﻿namespace EcommerceAPI.Domain.Enums;
+﻿namespace RBACAPI.Domain.Enums;
 
 public enum PriorityLevel
 {
