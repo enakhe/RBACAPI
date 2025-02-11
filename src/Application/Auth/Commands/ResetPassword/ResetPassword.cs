@@ -55,7 +55,7 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
                 error = "The new password and confirmation password do not match."
             });
 
-        var resetPasswordResponse = await _identityService.RestPasswordAsync(request.Email, request.Code, request.Password);
+        var resetPasswordResponse = await _identityService.ResetPasswordAsync(request.Email, request.Code, request.Password);
 
         if (!resetPasswordResponse.Succeeded)
         {

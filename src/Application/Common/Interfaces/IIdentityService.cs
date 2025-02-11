@@ -24,7 +24,7 @@ public interface IIdentityService
 
     Task<Result> GetPasswordResetTokenAsync(string email);
 
-    Task<Result> RestPasswordAsync(string email, string code, string password);
+    Task<Result> ResetPasswordAsync(string email, string code, string password);
 
     Task<Result> LogOut(string userId);
 

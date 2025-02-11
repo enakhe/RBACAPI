@@ -55,12 +55,10 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
 public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
 {
     private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
+    public SignUpCommandHandler(IIdentityService identityService)
     {
         _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Result> Handle(SignUpCommand request, CancellationToken cancellationToken)
@@ -68,7 +66,6 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
         {
-            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return Result.Failure(signUpResponse.Errors);
         }
 
@@ -78,3 +75,4 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
         });
     }
 }
+

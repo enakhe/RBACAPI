@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RBACAPI.Infrastructure.Repository;
 
 namespace EcommerceAPI.Infrastructure.Identity;
 
@@ -30,9 +31,7 @@ public class IdentityService : IIdentityService
     private readonly IJWTService _jWTService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserStore<ApplicationUser> _userStore;
-    private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly IOTPService _otpService;
-    private readonly ILogger<IdentityService> _logger;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -43,8 +42,7 @@ public class IdentityService : IIdentityService
         IHttpContextAccessor httpContextAccessor,
         IUserStore<ApplicationUser> userStore,
         IUserEmailStore<ApplicationUser> emailStore,
-        IOTPService otpService,
-        ILogger<IdentityService> logger)
+        IOTPService otpService)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
@@ -53,9 +51,7 @@ public class IdentityService : IIdentityService
         _jWTService = jwtService;
         _httpContextAccessor = httpContextAccessor;
         _userStore = userStore;
-        _emailStore = emailStore;
         _otpService = otpService;
-        _logger = logger;
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -140,15 +136,38 @@ public class IdentityService : IIdentityService
             return Result.Failure(errors);
         }
 
-        var accessToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
-        var refreshToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
+        var accessToken = _jWTService.GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        var refreshToken = _jWTService.GenerateToken(user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
         user.LastLoginDate = DateTime.Now;
         await _userManager.UpdateAsync(user);
+
+        var context = _httpContextAccessor.HttpContext;
+        if (context != null)
+        {
+            context.Response.Cookies.Append("Auth.JWT.AccessToken", accessToken, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                IsEssential = true
+            });
+
+            context.Response.Cookies.Append("Auth.JWT.RefreshToken", refreshToken, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                IsEssential = true
+            });
+        }
+
         return Result.Success(new
         {
             accessToken,
             refreshToken,
-            Message = "Great news! You’ve logged in successfully. Let’s get started!"
+            message = "Great news! You’ve logged in successfully. Let’s get started!"
         });
     }
 
@@ -156,34 +175,40 @@ public class IdentityService : IIdentityService
     {
         var foundUser = await _userManager.FindByEmailAsync(email);
         if (foundUser != null)
-        {
-            IEnumerable<string> errors = new List<string> { "The provided email is already used" };
-            return Result.Failure(errors);
-        }
+            return Result.Failure(new List<string> { "The provided email is already used" });
 
-        var user = CreateUser();
-        user.Id = Guid.NewGuid().ToString();
-        user.UserName = email;
-
-        await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
-        await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
+        var user = new ApplicationUser { Id = Guid.NewGuid().ToString(), UserName = email, Email = email };
         var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
-        {
             return Result.Failure(result.Errors.Select(e => e.Description));
-        }
 
-        var accessToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
-        var refreshToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
-        user.LastLoginDate = DateTime.UtcNow;
-        await _userManager.UpdateAsync(user);
-        return Result.Success(new
+        // Generate Tokens
+        var accessToken = _jWTService.GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        var refreshToken = _jWTService.GenerateToken(user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
+
+        var context = _httpContextAccessor.HttpContext;
+        if (context != null)
         {
-            accessToken,
-            refreshToken,
-            Message = "User signed up successfully"
-        });
+            context.Response.Cookies.Append("Auth.JWT.AccessToken", accessToken, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                IsEssential = true
+            });
+
+            context.Response.Cookies.Append("Auth.JWT.RefreshToken", refreshToken, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                IsEssential = true
+            });
+        }
+        return Result.Success(new { accessToken, refreshToken, message = "User signed up successfully" });
     }
 
     public async Task<Result> SendOTPAsync(string email)
@@ -196,7 +221,7 @@ public class IdentityService : IIdentityService
         }
             
         var userId = await _userManager.GetUserIdAsync(user);
-        var otpToken = _jWTService.GenerateToken(_httpContextAccessor.HttpContext!, user, "OTPToken", DateTimeOffset.UtcNow.AddMinutes(5));
+        var otpToken = _jWTService.GenerateToken(user, "OTPToken", DateTimeOffset.UtcNow.AddMinutes(5));
         var code = _otpService.GenerateOTP(userId, email, otpToken, DateTime.UtcNow);
 
         return Result.Success(new
@@ -279,7 +304,7 @@ public class IdentityService : IIdentityService
         });
     }
 
-    public async Task<Result> RestPasswordAsync(string email, string code, string password)
+    public async Task<Result> ResetPasswordAsync(string email, string code, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)

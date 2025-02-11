@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 namespace EcommerceAPI.Infrastructure.Interface;
 public interface IJWTService
 {
-    string GenerateToken(HttpContext context, ApplicationUser user, string tokenName, DateTimeOffset validTime);
+    string GenerateToken(ApplicationUser user, string tokenName, DateTimeOffset validTime);
     string? ValidateJWTToken(string token);
     Task<string?> RefreshTokenAsync(string refreshToken);
 }
