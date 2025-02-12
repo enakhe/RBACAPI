@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Security;
 using RBACAPI.Domain.Constants;
 
 namespace RBACAPI.Application.TodoLists.Commands.PurgeTodoLists;
+=======
+﻿using EcommerceAPI.Application.Common.Interfaces;
+using EcommerceAPI.Application.Common.Security;
+using EcommerceAPI.Domain.Constants;
+
+namespace EcommerceAPI.Application.TodoLists.Commands.PurgeTodoLists;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 [Authorize(Roles = Roles.Administrator)]
 [Authorize(Policy = Policies.CanPurge)]

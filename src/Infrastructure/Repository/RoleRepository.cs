@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RBACAPI.Application.Common.Models;
-using RBACAPI.Infrastructure.Data;
-using RBACAPI.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
 using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Infrastructure.Repository;

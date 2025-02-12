@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.TodoLists.Commands.DeleteTodoList;
+=======
+﻿using EcommerceAPI.Application.Common.Interfaces;
+
+namespace EcommerceAPI.Application.TodoLists.Commands.DeleteTodoList;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 public record DeleteTodoListCommand(int Id) : IRequest;
 

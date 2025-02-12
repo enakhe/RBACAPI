@@ -1,10 +1,10 @@
-﻿using RBACAPI.Domain.Constants;
-using RBACAPI.Infrastructure.Data;
-using RBACAPI.Infrastructure.Identity;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RBACAPI.Domain.Constants;
+using RBACAPI.Infrastructure.Data;
+using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Application.FunctionalTests;
 

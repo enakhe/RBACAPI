@@ -1,6 +1,6 @@
-﻿using RBACAPI.Application.Common.Interfaces;
-using MediatR.Pipeline;
+﻿using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
+using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.Common.Behaviours;
 

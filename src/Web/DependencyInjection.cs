@@ -1,11 +1,10 @@
 ﻿using Azure.Identity;
+using Microsoft.AspNetCore.Mvc;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Infrastructure.Data;
 using RBACAPI.Web.Services;
-using Microsoft.AspNetCore.Mvc;
-
-using NSwag;
-using NSwag.Generation.Processors.Security;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

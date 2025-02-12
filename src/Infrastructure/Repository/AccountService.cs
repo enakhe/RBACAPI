@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
 using RBACAPI.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace RBACAPI.Infrastructure.Repository;
 public class AccountService : IAccountService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    
+
     public AccountService(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
@@ -79,7 +72,7 @@ public class AccountService : IAccountService
         }
 
         var enable2fa = await _userManager.SetTwoFactorEnabledAsync(user, true);
-        if(!enable2fa.Succeeded)
+        if (!enable2fa.Succeeded)
         {
             IEnumerable<string> errors = new List<string> { "Cannot enable Two Factor Authentication. Please check your account settings and try again" };
             return Result.Failure(errors);

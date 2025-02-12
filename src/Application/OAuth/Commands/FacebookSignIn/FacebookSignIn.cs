@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.OAuth.Commands.FacebookSignIn;
 

@@ -1,15 +1,11 @@
 ﻿#nullable disable
 
-using System.Threading.Tasks;
-using Moq;
-using NUnit.Framework;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
-using RBACAPI.Infrastructure.Identity;
-using RBACAPI.Application.Common.Models;
-using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Infrastructure.Interface;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Infrastructure.Identity;
+using RBACAPI.Infrastructure.Interface;
 
 namespace RBACAPI.Application.FunctionalTests.Auth.Commands
 {
@@ -71,6 +67,11 @@ namespace RBACAPI.Application.FunctionalTests.Auth.Commands
     .Setup(x => x.FindByEmailAsync(existingEmail))
     .ReturnsAsync(new ApplicationUser { Id = "123", Email = existingEmail, UserName = existingEmail });
 
+            //// Arrange: Mock JWTRepository
+            //var mockJwtRepository = new Mock<IJWTService>();
+            //mockJwtRepository
+            //    .Setup(repo => repo.GenerateToken(It.IsAny<HttpContext>(), It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
+            //    .Returns("mocked_token");
 
             _mockUserManager.Verify(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Never);
 

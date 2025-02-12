@@ -1,7 +1,7 @@
-﻿using RBACAPI.Domain.Common;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using RBACAPI.Domain.Common;
 
 namespace RBACAPI.Infrastructure.Data.Interceptors;
 

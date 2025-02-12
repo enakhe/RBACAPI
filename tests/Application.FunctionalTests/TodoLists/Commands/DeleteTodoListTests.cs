@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Application.TodoLists.Commands.CreateTodoList;
 using RBACAPI.Application.TodoLists.Commands.DeleteTodoList;
 using RBACAPI.Domain.Entities;
 
 namespace RBACAPI.Application.FunctionalTests.TodoLists.Commands;
+=======
+﻿using EcommerceAPI.Application.TodoLists.Commands.CreateTodoList;
+using EcommerceAPI.Application.TodoLists.Commands.DeleteTodoList;
+using EcommerceAPI.Domain.Entities;
+
+namespace EcommerceAPI.Application.FunctionalTests.TodoLists.Commands;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 using static Testing;
 

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Infrastructure.Data;
-using RBACAPI.Infrastructure.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using RBACAPI.Application.OAuth;
 using RBACAPI.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
+using RBACAPI.Infrastructure.Data;
+using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Infrastructure.Utils;
 public static class CreateUserFromSocialLoginExtension

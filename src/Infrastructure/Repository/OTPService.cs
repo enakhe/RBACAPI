@@ -1,17 +1,12 @@
 ﻿#nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using RBACAPI.Application.Common.Interfaces;
-using Microsoft.Extensions.Configuration;
-using RBACAPI.Application.User.Commands.VerifyEmail;
-using RBACAPI.Application.Common.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Infrastructure.Repository;
 public class OTPService : IOTPService

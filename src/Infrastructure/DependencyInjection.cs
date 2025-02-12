@@ -1,4 +1,12 @@
 ﻿using System.Text;
+using EcommerceAPI.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Domain.Constants;
 using RBACAPI.Infrastructure.Data;
@@ -6,15 +14,6 @@ using RBACAPI.Infrastructure.Data.Interceptors;
 using RBACAPI.Infrastructure.Identity;
 using RBACAPI.Infrastructure.Interface;
 using RBACAPI.Infrastructure.Repository;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -69,8 +68,8 @@ public static class DependencyInjection
             googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
         }).AddFacebook(facebookOptions =>
         {
-             facebookOptions.AppId = configuration["Authentication:Facebook:AppId"]!;
-             facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"]!;
+            facebookOptions.AppId = configuration["Authentication:Facebook:AppId"]!;
+            facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"]!;
         });
 
 
@@ -88,7 +87,7 @@ public static class DependencyInjection
         services.AddScoped<IJWTService, JWTRepository>();
         services.AddScoped<IOAuthService, OAuthService>();
         services.AddScoped<IOTPService, OTPService>();
-        services.AddScoped<IAccountService,  AccountService>();
+        services.AddScoped<IAccountService, AccountService>();
 
         services.AddTransient<IUserEmailStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
         services.AddTransient<IUserStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();

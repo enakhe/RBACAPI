@@ -34,7 +34,11 @@
       "serviceHost": null,
       "serviceBasePath": null,
       "serviceSchemes": [],
+<<<<<<< HEAD
       "infoTitle": "RBACAPI API",
+=======
+      "infoTitle": "EcommerceAPI API",
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
       "infoDescription": null,
       "infoVersion": "1.0.0",
       "documentTemplate": null,

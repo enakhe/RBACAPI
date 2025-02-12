@@ -1,12 +1,11 @@
-﻿using System.Runtime.InteropServices;
-using RBACAPI.Domain.Constants;
-using RBACAPI.Domain.Entities;
-using RBACAPI.Infrastructure.Identity;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RBACAPI.Domain.Constants;
+//using RBACAPI.Domain.Entities;
+using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Infrastructure.Data;
 
@@ -83,7 +82,7 @@ public class ApplicationDbContextInitialiser
             await _userManager.CreateAsync(administrator, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
-                await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
             }
         }
     }

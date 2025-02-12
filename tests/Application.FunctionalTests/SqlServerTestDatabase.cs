@@ -1,8 +1,8 @@
 ﻿using System.Data.Common;
-using RBACAPI.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using RBACAPI.Infrastructure.Data;
 using Respawn;
 
 namespace RBACAPI.Application.FunctionalTests;

@@ -2,7 +2,11 @@
   "x-generator": "NSwag v14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))",
   "openapi": "3.0.0",
   "info": {
+<<<<<<< HEAD
     "title": "RBACAPI API",
+=======
+    "title": "EcommerceAPI API",
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
     "version": "1.0.0"
   },
   "paths": {

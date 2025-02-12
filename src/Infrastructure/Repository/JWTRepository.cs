@@ -1,58 +1,48 @@
-﻿using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Infrastructure.Identity;
-using RBACAPI.Infrastructure.Interface;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using RBACAPI.Infrastructure.Identity;
+using RBACAPI.Infrastructure.Interface;
 
-namespace RBACAPI.Infrastructure.Repository;
+namespace EcommerceAPI.Infrastructure.Repository;
 
 public class JWTRepository : IJWTService
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration configuration;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public JWTRepository(IConfiguration configuration, UserManager<ApplicationUser> userManager)
+    public JWTRepository(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
     {
-        _configuration = configuration;
+        this.configuration = configuration;
+        _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
     }
-
     public string GenerateToken(ApplicationUser user, string tokenName, DateTimeOffset validTime)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
         var userClaims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!)
+            new Claim(ClaimTypes.Email, user.Email!),
         };
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
             claims: userClaims,
-            expires: validTime.UtcDateTime,
+            expires: DateTime.Now.AddDays(1),
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public async Task<string?> RefreshTokenAsync(string refreshToken)
-    {
-        var userId = ValidateJWTToken(refreshToken);
-        if (string.IsNullOrEmpty(userId))
-            return null;
-
-        var user = await _userManager.FindByIdAsync(userId);
-        return user != null ? GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30)) : null;
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        return jwt;
     }
 
     public string? ValidateJWTToken(string token)
@@ -61,7 +51,7 @@ public class JWTRepository : IJWTService
             return null;
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);
 
         try
         {
@@ -70,9 +60,9 @@ public class JWTRepository : IJWTService
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
-                ValidIssuer = _configuration["Jwt:Issuer"],
+                ValidIssuer = configuration["Jwt:Issuer"],
                 ValidateAudience = true,
-                ValidAudience = _configuration["Jwt:Audience"],
+                ValidAudience = configuration["Jwt:Audience"],
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
@@ -80,13 +70,23 @@ public class JWTRepository : IJWTService
             tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            return jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            return userId;
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
+            throw new Exception(ex.Message);
         }
     }
+
+    public async Task<string?> RefreshTokenAsync(string refreshToken)
+    {
+        var tokenValidationResult = ValidateJWTToken(refreshToken);
+        if (string.IsNullOrEmpty(tokenValidationResult))
+            return null;
+
+        var user = await _userManager.FindByIdAsync(tokenValidationResult!);
+        return GenerateToken(user!, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+    }
 }
-
-

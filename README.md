@@ -1,6 +1,4 @@
-﻿# RBACAPI
-
-The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/RBACAPI) version 8.0.5.
+﻿
 
 ## Build
 

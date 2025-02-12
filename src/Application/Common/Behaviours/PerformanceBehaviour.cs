@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using RBACAPI.Application.Common.Interfaces;
 using Microsoft.Extensions.Logging;
+using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.Common.Behaviours;
 

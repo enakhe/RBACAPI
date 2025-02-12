@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using RBACAPI.Infrastructure.Identity;
-using RBACAPI.Infrastructure.Interface;
-using Microsoft.AspNetCore.Builder;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using RBACAPI.Infrastructure.Identity;
+using RBACAPI.Infrastructure.Interface;
 
 namespace RBACAPI.Infrastructure.Middleware;
 public class JwtCookieAuthMiddleware

@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Application.Common.Exceptions;
 using RBACAPI.Application.TodoItems.Commands.CreateTodoItem;
 using RBACAPI.Application.TodoLists.Commands.CreateTodoList;
 using RBACAPI.Domain.Entities;
 
 namespace RBACAPI.Application.FunctionalTests.TodoItems.Commands;
+=======
+﻿using EcommerceAPI.Application.Common.Exceptions;
+using EcommerceAPI.Application.TodoItems.Commands.CreateTodoItem;
+using EcommerceAPI.Application.TodoLists.Commands.CreateTodoList;
+using EcommerceAPI.Domain.Entities;
+
+namespace EcommerceAPI.Application.FunctionalTests.TodoItems.Commands;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 using static Testing;
 

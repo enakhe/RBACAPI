@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
-using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Application.Common.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Security;
 
 namespace RBACAPI.Application.Account.Queries.Profile;
 

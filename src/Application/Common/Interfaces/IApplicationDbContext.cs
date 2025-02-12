@@ -1,12 +1,12 @@
-﻿using RBACAPI.Domain.Entities;
+﻿//using RBACAPI.Domain.Entities;
 
 namespace RBACAPI.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
-    DbSet<TodoList> TodoLists { get; }
+    //DbSet<TodoList> TodoLists { get; }
 
-    DbSet<TodoItem> TodoItems { get; }
+    //DbSet<TodoItem> TodoItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
