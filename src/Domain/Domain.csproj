@@ -6,8 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entities\TodoItem.cs" />
+    <Compile Remove="Entities\TodoList.cs" />
+    <Compile Remove="Events\TodoItemCompletedEvent.cs" />
+    <Compile Remove="Events\TodoItemCreatedEvent.cs" />
+    <Compile Remove="Events\TodoItemDeletedEvent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Events\" />
   </ItemGroup>
 
 </Project>

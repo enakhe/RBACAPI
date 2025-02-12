@@ -1,4 +1,4 @@
-﻿using RBACAPI.Domain.Entities;
+﻿//using RBACAPI.Domain.Entities;
 
 namespace RBACAPI.Application.Common.Models;
 
@@ -12,8 +12,8 @@ public class LookupDto
     {
         public Mapping()
         {
-            CreateMap<TodoList, LookupDto>();
-            CreateMap<TodoItem, LookupDto>();
+            //CreateMap<TodoList, LookupDto>();
+            //CreateMap<TodoItem, LookupDto>();
         }
     }
 }

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using RBACAPI.Infrastructure.Identity;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Infrastructure.Interface;
 public interface IJWTService

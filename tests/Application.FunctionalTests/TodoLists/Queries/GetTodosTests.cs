@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Application.TodoLists.Queries.GetTodos;
 using RBACAPI.Domain.Entities;
 using RBACAPI.Domain.ValueObjects;
 
 namespace RBACAPI.Application.FunctionalTests.TodoLists.Queries;
+=======
+﻿using EcommerceAPI.Application.TodoLists.Queries.GetTodos;
+using EcommerceAPI.Domain.Entities;
+using EcommerceAPI.Domain.ValueObjects;
+
+namespace EcommerceAPI.Application.FunctionalTests.TodoLists.Queries;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 using static Testing;
 

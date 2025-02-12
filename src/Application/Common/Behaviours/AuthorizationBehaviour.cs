@@ -3,7 +3,6 @@ using RBACAPI.Application.Common.Exceptions;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Security;
 
-namespace RBACAPI.Application.Common.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {

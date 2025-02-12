@@ -1,7 +1,7 @@
 ﻿#nullable disable
 
-using RBACAPI.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using RBACAPI.Domain.Enums;
 
 namespace RBACAPI.Infrastructure.Identity;
 

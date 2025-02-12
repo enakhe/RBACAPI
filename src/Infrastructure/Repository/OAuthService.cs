@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Application.OAuth.Commands.GoogleSignIn;
-using RBACAPI.Infrastructure.Identity;
-using RBACAPI.Application.OAuth;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using static Google.Apis.Auth.GoogleJsonWebSignature;
-using RBACAPI.Infrastructure.Utils;
+using Newtonsoft.Json;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.OAuth;
+using RBACAPI.Application.OAuth.Commands.FacebookSignIn;
+using RBACAPI.Application.OAuth.Commands.GoogleSignIn;
 using RBACAPI.Domain.Common;
 using RBACAPI.Domain.Enums;
 using RBACAPI.Infrastructure.Data;
-using RBACAPI.Application.User.Commands.Login;
+using RBACAPI.Infrastructure.Identity;
 using RBACAPI.Infrastructure.Interface;
-using Microsoft.AspNetCore.Http;
-using RBACAPI.Application.User.Commands.SignUp;
-using RBACAPI.Application.OAuth.Commands.FacebookSignIn;
-using Newtonsoft.Json;
-using System.Net.Http;
+using RBACAPI.Infrastructure.Utils;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace RBACAPI.Infrastructure.Repository;
 public class OAuthService : IOAuthService

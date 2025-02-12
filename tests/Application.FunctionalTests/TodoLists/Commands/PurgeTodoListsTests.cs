@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Application.Common.Exceptions;
 using RBACAPI.Application.Common.Security;
 using RBACAPI.Application.TodoLists.Commands.CreateTodoList;
@@ -5,6 +6,15 @@ using RBACAPI.Application.TodoLists.Commands.PurgeTodoLists;
 using RBACAPI.Domain.Entities;
 
 namespace RBACAPI.Application.FunctionalTests.TodoLists.Commands;
+=======
+﻿using EcommerceAPI.Application.Common.Exceptions;
+using EcommerceAPI.Application.Common.Security;
+using EcommerceAPI.Application.TodoLists.Commands.CreateTodoList;
+using EcommerceAPI.Application.TodoLists.Commands.PurgeTodoLists;
+using EcommerceAPI.Domain.Entities;
+
+namespace EcommerceAPI.Application.FunctionalTests.TodoLists.Commands;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 using static Testing;
 

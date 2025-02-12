@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
-using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.Account.Commands.EnableAuthenticator;
 

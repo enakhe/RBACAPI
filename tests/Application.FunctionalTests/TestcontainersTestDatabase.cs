@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
-using RBACAPI.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using RBACAPI.Infrastructure.Data;
 using Respawn;
 using Testcontainers.MsSql;
 

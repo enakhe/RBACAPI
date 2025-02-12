@@ -1,6 +1,6 @@
-﻿using RBACAPI.Application.Common.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Common.Exceptions;
 
 namespace RBACAPI.Web.Infrastructure;
 

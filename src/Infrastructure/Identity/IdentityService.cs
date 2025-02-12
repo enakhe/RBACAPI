@@ -1,24 +1,12 @@
 using System.Security.Claims;
 using System.Text;
-using RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
-using RBACAPI.Application.Auth.EventHandlers;
-using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Application.Common.Models;
-using RBACAPI.Application.User.Commands.Login;
-using RBACAPI.Application.User.Commands.SendOTP;
-using RBACAPI.Application.User.Commands.SignUp;
-using RBACAPI.Application.User.Commands.VerifyEmail;
-using RBACAPI.Infrastructure.Interface;
-using RBACAPI.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using RBACAPI.Infrastructure.Repository;
+using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Infrastructure.Interface;
 
 namespace RBACAPI.Infrastructure.Identity;
 
@@ -31,6 +19,7 @@ public class IdentityService : IIdentityService
     private readonly IJWTService _jWTService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserStore<ApplicationUser> _userStore;
+    private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly IOTPService _otpService;
 
     public IdentityService(
@@ -51,6 +40,7 @@ public class IdentityService : IIdentityService
         _jWTService = jwtService;
         _httpContextAccessor = httpContextAccessor;
         _userStore = userStore;
+        _emailStore = emailStore;
         _otpService = otpService;
     }
 
@@ -219,7 +209,7 @@ public class IdentityService : IIdentityService
             IEnumerable<string> errors = new List<string> { "Invalid login attempt" };
             return Result.Failure(errors);
         }
-            
+
         var userId = await _userManager.GetUserIdAsync(user);
         var otpToken = _jWTService.GenerateToken(user, "OTPToken", DateTimeOffset.UtcNow.AddMinutes(5));
         var code = _otpService.GenerateOTP(userId, email, otpToken, DateTime.UtcNow);
@@ -269,7 +259,7 @@ public class IdentityService : IIdentityService
         }
 
         var verifyEmailResponse = _otpService.ValidateOTP(userId, email, otpData, token!);
-        if(!verifyEmailResponse.Succeeded)
+        if (!verifyEmailResponse.Succeeded)
         {
             IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };
             return Result.Failure(errors);
@@ -367,7 +357,7 @@ public class IdentityService : IIdentityService
         }
 
         var result = await _userManager.ChangePasswordAsync(user, password, newPassword);
-        if(!result.Succeeded)
+        if (!result.Succeeded)
         {
             return Result.Failure(result.Errors.Select(e => e.Description));
         }

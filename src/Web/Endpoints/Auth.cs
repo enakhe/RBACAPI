@@ -1,15 +1,13 @@
-﻿using RBACAPI.Application.Account.Commands.ChangeEmail;
-using RBACAPI.Application.Auth.Commands.ChangePassword;
+﻿using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
 using RBACAPI.Application.Auth.Commands.LogOut;
 using RBACAPI.Application.Auth.Commands.ResetPassword;
+using RBACAPI.Application.Common.Models;
 using RBACAPI.Application.Common.Security;
 using RBACAPI.Application.User.Commands.Login;
 using RBACAPI.Application.User.Commands.SendOTP;
 using RBACAPI.Application.User.Commands.SignUp;
 using RBACAPI.Application.User.Commands.VerifyEmail;
-using Microsoft.AspNetCore.Mvc;
-using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Web.Endpoints;
 

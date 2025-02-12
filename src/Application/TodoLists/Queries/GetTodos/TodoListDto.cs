@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 ﻿using RBACAPI.Domain.Entities;
 
 namespace RBACAPI.Application.TodoLists.Queries.GetTodos;
+=======
+﻿using EcommerceAPI.Domain.Entities;
+
+namespace EcommerceAPI.Application.TodoLists.Queries.GetTodos;
+>>>>>>> f328d42b2352a899f713f43892f8f4a1a23a6498
 
 public class TodoListDto
 {

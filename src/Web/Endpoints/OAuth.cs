@@ -1,7 +1,7 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.OAuth.Commands.FacebookSignIn;
 using RBACAPI.Application.OAuth.Commands.GoogleSignIn;
-using Microsoft.AspNetCore.Mvc;
 
 namespace RBACAPI.Web.Endpoints;
 

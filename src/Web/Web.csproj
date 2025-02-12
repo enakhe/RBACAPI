@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Endpoints\TodoItems.cs" />
+    <Compile Remove="Endpoints\TodoLists.cs" />
+    <Compile Remove="Endpoints\WeatherForecasts.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>

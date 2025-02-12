@@ -1,11 +1,4 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using RBACAPI.Domain.Enums;
-using System.Threading.Tasks;
-
 namespace RBACAPI.Domain.Common;
 public class BaseResponse<T>
 {

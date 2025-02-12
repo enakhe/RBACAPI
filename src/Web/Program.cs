@@ -1,10 +1,7 @@
-using System.Text;
+using Microsoft.OpenApi.Models;
 using RBACAPI.Infrastructure.Data;
 using RBACAPI.Infrastructure.Middleware;
 using RBACAPI.Web.Middleware;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

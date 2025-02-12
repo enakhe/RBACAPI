@@ -6,6 +6,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="TodoItems\**" />
+      <Compile Remove="TodoLists\**" />
+      <EmbeddedResource Remove="TodoItems\**" />
+      <EmbeddedResource Remove="TodoLists\**" />
+      <None Remove="TodoItems\**" />
+      <None Remove="TodoLists\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <None Remove="appsettings.json" />
     </ItemGroup>
 

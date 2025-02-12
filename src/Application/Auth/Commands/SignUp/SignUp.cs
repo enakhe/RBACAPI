@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using RBACAPI.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Application.User.Commands.SignUp;
-
 public record SignUpCommand : IRequest<Result>
 {
     [Required, EmailAddress]
@@ -55,8 +53,12 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
 public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
 {
     private readonly IIdentityService _identityService;
-
     public SignUpCommandHandler(IIdentityService identityService)
+    {
+        _identityService = identityService;
+    }
+
+    public SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
     {
         _identityService = identityService;
     }
@@ -75,4 +77,3 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
         });
     }
 }
-

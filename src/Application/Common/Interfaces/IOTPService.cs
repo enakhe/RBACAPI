@@ -1,5 +1,5 @@
-﻿using RBACAPI.Application.Common.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Application.Common.Interfaces;
 public interface IOTPService

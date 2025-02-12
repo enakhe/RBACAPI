@@ -1,11 +1,11 @@
-﻿using RBACAPI.Application.Account.Commands.ChangeEmail;
+﻿using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Account.Commands.ChangeEmail;
 using RBACAPI.Application.Account.Commands.Disable2FAuthentication;
 using RBACAPI.Application.Account.Commands.EnableAuthenticator;
 using RBACAPI.Application.Account.Commands.GenerateRecoveryCodes;
 using RBACAPI.Application.Account.Queries.Profile;
 using RBACAPI.Application.Auth.Commands.ChangePassword;
 using RBACAPI.Application.Common.Security;
-using Microsoft.AspNetCore.Mvc;
 
 namespace RBACAPI.Web.Endpoints;
 
@@ -22,7 +22,7 @@ public class Account : EndpointGroupBase
             .MapPost(ChangePassword, "change-password")
             .MapPost(ChangeEmail, "change-email");
     }
- 
+
     public Task<IActionResult> UserProfile(ISender sender)
     {
         return sender.Send(new ProfileQuery());
