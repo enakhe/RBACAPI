@@ -11,18 +11,20 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSwaggerGen(swagger =>
 {
     swagger.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
         Title = "Role Based Access Control API",
-        Description = "A full Role Based Access Controle API for performing administration activities, priviledges, and permissions"
+        Description = "A full Role Based Access Controle API for performing administration activities, priviledges, and permissions",
+        Contact = new OpenApiContact { Name = "Samuel Izuagbe", Email = "izuagbesam@gmail.com" }
     });
     swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "Auth.JWT.AccessToken",
         In = ParameterLocation.Header
