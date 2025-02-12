@@ -27,9 +27,9 @@ public class CreateRoleCommandValidator : AbstractValidator<CreateRoleCommand>
 
 public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Result>
 {
-    private readonly IRoleRepository _roleRepository;
+    private readonly IRoleService _roleRepository;
 
-    public CreateRoleCommandHandler(IRoleRepository roleRepository)
+    public CreateRoleCommandHandler(IRoleService roleRepository)
     {
         _roleRepository = roleRepository;
     }

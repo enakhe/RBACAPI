@@ -84,6 +84,7 @@ public static class DependencyInjection
 
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IRoleService, RoleService>();
         services.AddScoped<IJWTService, JWTRepository>();
         services.AddScoped<IOAuthService, OAuthService>();
         services.AddScoped<IOTPService, OTPService>();

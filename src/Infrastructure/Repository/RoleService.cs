@@ -4,11 +4,11 @@ using RBACAPI.Application.Common.Models;
 using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Infrastructure.Repository;
-public class RoleRepository : IRoleRepository
+public class RoleService : IRoleService
 {
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    private RoleRepository(RoleManager<IdentityRole> roleManager)
+    public RoleService(RoleManager<IdentityRole> roleManager)
     {
         _roleManager = roleManager;
     }

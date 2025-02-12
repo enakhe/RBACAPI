@@ -16,8 +16,8 @@ builder.Services.AddSwaggerGen(swagger =>
     swagger.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "Ecommerce API",
-        Description = "Full Ecommerce API"
+        Title = "Role Based Access Control API",
+        Description = "A full Role Based Access Controle API for performing administration activities, priviledges, and permissions"
     });
     swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
