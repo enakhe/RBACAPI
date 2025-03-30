@@ -1,6 +1,6 @@
 ﻿namespace RBACAPI.Domain.Constants;
 
-public abstract class Roles
+public abstract class DefaultRoles
 {
     public const string Administrator = nameof(Administrator);
 }
