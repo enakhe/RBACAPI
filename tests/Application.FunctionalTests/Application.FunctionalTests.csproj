@@ -40,6 +40,6 @@
     <PackageReference Include="xunit" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Web\Web.csproj" />
+    <ProjectReference Include="..\..\src\Web\WebAPI.csproj" />
   </ItemGroup>
 </Project>
