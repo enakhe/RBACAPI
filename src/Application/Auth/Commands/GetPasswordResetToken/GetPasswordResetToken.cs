@@ -28,7 +28,6 @@ public class GetPasswordResetTokenCommandHandler : IRequestHandler<GetPasswordRe
     private readonly IIdentityService _identityService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-
     public GetPasswordResetTokenCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
     {
         _identityService = identityService;
@@ -40,10 +39,7 @@ public class GetPasswordResetTokenCommandHandler : IRequestHandler<GetPasswordRe
         if (string.IsNullOrEmpty(request.Email))
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return new UnauthorizedObjectResult(new
-            {
-                error = new[] { "Not authorized" }
-            });
+            return new UnauthorizedResult();
         }
 
         var getResetPasswordResponse = await _identityService.GetPasswordResetTokenAsync(request.Email);

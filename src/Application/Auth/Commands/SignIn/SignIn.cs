@@ -37,10 +37,7 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, IActionResult
         if (!signInResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return new UnauthorizedObjectResult(new
-            {
-                error = signInResponse.Errors
-            });
+            return new UnauthorizedResult();
         }
 
         return new OkObjectResult(new

@@ -38,10 +38,7 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, IAc
         if (string.IsNullOrEmpty(email))
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return new UnauthorizedObjectResult(new
-            {
-                error = new[] { "Not authorized" }
-            });
+            return new UnauthorizedResult();
         }
 
         var verifyEmailResponse = await _identityService.VerifyEmailAsync(email, request.Code);
