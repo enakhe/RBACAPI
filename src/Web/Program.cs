@@ -14,7 +14,6 @@ builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
-builder.AddSqlServerDbContext<ApplicationDbContext>("sql");
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSwaggerGen(swagger =>

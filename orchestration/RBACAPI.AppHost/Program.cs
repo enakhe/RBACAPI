@@ -1,15 +1,18 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var cache = builder.AddRedis("cache").WithRedisCommander();
-var sqldb = builder.AddSqlServer("sql")
+
+var password = builder.AddParameter("DM(wpZ12(PC6QC{!7bV)rQ", secret: true);
+var sql = builder.AddSqlServer("sql", password)
     .WithLifetime(ContainerLifetime.Persistent)
-    .WithDataVolume()
-    .AddDatabase("db");
+    .WithDataVolume();
+
+var db = sql.AddDatabase("RBAC");
 
 var webApi = builder.AddProject<Projects.WebAPI>("web-api")
-    .WithReference(sqldb)
+    .WithReference(db)
     .WithReference(cache)
-    .WaitFor(sqldb);
+    .WaitFor(db);
 
 builder.AddProject<Projects.UI>("ui")
     .WithReference(webApi);
