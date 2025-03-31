@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using RBACAPI.Application.Account.Commands.ChangeEmail;
 using RBACAPI.Application.Account.Commands.Disable2FAuthentication;
 using RBACAPI.Application.Account.Commands.EnableAuthenticator;
@@ -23,6 +24,7 @@ public class Account : EndpointGroupBase
             .MapPost(ChangeEmail, "change-email");
     }
 
+    [OutputCache]
     public Task<IActionResult> UserProfile(ISender sender)
     {
         return sender.Send(new ProfileQuery());
