@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RootNamespace>RBACAPI.Application</RootNamespace>
     <AssemblyName>RBACAPI.Application</AssemblyName>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

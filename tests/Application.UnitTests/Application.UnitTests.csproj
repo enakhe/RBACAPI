@@ -1,27 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <RootNamespace>RBACAPI.Application.UnitTests</RootNamespace>
-        <AssemblyName>RBACAPI.Application.UnitTests</AssemblyName>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="nunit" />
-        <PackageReference Include="NUnit.Analyzers">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Moq" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Application\Application.csproj" />
-        <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <RootNamespace>RBACAPI.Application.UnitTests</RootNamespace>
+    <AssemblyName>RBACAPI.Application.UnitTests</AssemblyName>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="nunit" />
+    <PackageReference Include="NUnit.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Moq" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
 </Project>

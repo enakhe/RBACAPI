@@ -1,20 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <RootNamespace>RBACAPI.Infrastructure.IntegrationTests</RootNamespace>
-        <AssemblyName>RBACAPI.Infrastructure.IntegrationTests</AssemblyName>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="NUnit.Analyzers">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="coverlet.collector" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <RootNamespace>RBACAPI.Infrastructure.IntegrationTests</RootNamespace>
+    <AssemblyName>RBACAPI.Infrastructure.IntegrationTests</AssemblyName>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
 </Project>

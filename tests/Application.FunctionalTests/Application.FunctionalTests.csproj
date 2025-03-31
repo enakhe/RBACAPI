@@ -1,51 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <RootNamespace>RBACAPI.Application.FunctionalTests</RootNamespace>
-        <AssemblyName>RBACAPI.Application.FunctionalTests</AssemblyName>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="TodoItems\**" />
-      <Compile Remove="TodoLists\**" />
-      <EmbeddedResource Remove="TodoItems\**" />
-      <EmbeddedResource Remove="TodoLists\**" />
-      <None Remove="TodoItems\**" />
-      <None Remove="TodoLists\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="appsettings.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="nunit" />
-        <PackageReference Include="NUnit.Analyzers">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Moq" />
-        <PackageReference Include="Respawn" />
-        <PackageReference Include="Testcontainers.MsSql" />
-        <PackageReference Include="xunit" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Web\Web.csproj" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <RootNamespace>RBACAPI.Application.FunctionalTests</RootNamespace>
+    <AssemblyName>RBACAPI.Application.FunctionalTests</AssemblyName>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="TodoItems\**" />
+    <Compile Remove="TodoLists\**" />
+    <EmbeddedResource Remove="TodoItems\**" />
+    <EmbeddedResource Remove="TodoLists\**" />
+    <None Remove="TodoItems\**" />
+    <None Remove="TodoLists\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="nunit" />
+    <PackageReference Include="NUnit.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Respawn" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Web\Web.csproj" />
+  </ItemGroup>
 </Project>

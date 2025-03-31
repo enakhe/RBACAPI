@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\orchestration\RBACAPI.ServiceDefaults\RBACAPI.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\RBACAPI.ServiceDefaults\RBACAPI.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +40,7 @@
   <!-- Auto-generated Open API specification and Angular TypeScript clients -->
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' And '$(SkipNSwag)' != 'True' ">

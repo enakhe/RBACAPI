@@ -4,6 +4,7 @@
     <RootNamespace>RBACAPI.Infrastructure</RootNamespace>
     <AssemblyName>RBACAPI.Infrastructure</AssemblyName>
     <UserSecretsId>de1a33ac-5534-40e7-91d6-58fce5ef15a3</UserSecretsId>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
