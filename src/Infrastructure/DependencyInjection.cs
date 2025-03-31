@@ -72,7 +72,6 @@ public static class DependencyInjection
             facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"]!;
         });
 
-
         services.AddAuthorizationBuilder();
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>

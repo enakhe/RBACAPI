@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
 using RBACAPI.Application.Auth.Commands.LogOut;
 using RBACAPI.Application.Auth.Commands.ResetPassword;
@@ -25,6 +26,7 @@ public class Auth : EndpointGroupBase
             .MapPost(LogOut, "logout");
     }
 
+    [OutputCache]
     public Task<IActionResult> SignIn(ISender send, SignInCommand command)
     {
         return send.Send(command);

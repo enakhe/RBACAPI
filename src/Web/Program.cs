@@ -6,6 +6,7 @@ using RBACAPI.Web.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddRedisOutputCache("cache");
 
 // Add services to the container.
 builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
@@ -65,6 +66,7 @@ else
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
+app.UseOutputCache();
 app.UseMiddleware<JwtCookieAuthMiddleware>();
 app.UseMiddleware<ErrorMiddleware>();
 app.UseAuthentication();
