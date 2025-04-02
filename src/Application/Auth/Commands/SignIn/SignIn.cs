@@ -58,7 +58,8 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, ActionResult>
             var result = 
                 new ObjectResult(new
                 {
-                    message = "Unauthorized access. The email or password is incorrect."
+                    message = "Unauthorized access. The email or password is incorrect.",
+                    errors = signInResponse.Errors
                 })
                 {
                     StatusCode = StatusCodes.Status401Unauthorized

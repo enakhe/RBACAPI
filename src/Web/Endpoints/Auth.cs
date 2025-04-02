@@ -32,7 +32,7 @@ public class Auth : EndpointGroupBase
         return send.Send(command);
     }
 
-    public Task<Result> SignUp(ISender send, SignUpCommand command)
+    public Task<ActionResult> SignUp(ISender send, SignUpCommand command)
     {
         return send.Send(command);
     }

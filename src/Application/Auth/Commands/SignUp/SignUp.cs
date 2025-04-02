@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Application.User.Commands.SignUp;
-public record SignUpCommand : IRequest<Result>
+public record SignUpCommand : IRequest<ActionResult>
 {
     [Required, EmailAddress]
     public required string Email { get; set; }
@@ -53,7 +54,7 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
     }
 }
 
-public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
+public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
 {
     private readonly IIdentityService _identityService;
     private readonly ICookieService _cookieService;
@@ -66,19 +67,29 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<Result> Handle(SignUpCommand request, CancellationToken cancellationToken)
+    public async Task<ActionResult> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
         {
-            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return Result.Failure(signUpResponse.Errors);
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            var result =
+                new ObjectResult(new
+                {
+                    message = "One or more validation failures have occurred",
+                    errors = signUpResponse.Errors
+                })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+
+            return result;
         }
 
         _cookieService.SetCookie(signUpResponse.AccessToken, "Auth.JWT.AccessToken");
         _cookieService.SetCookie(signUpResponse.RefreshToken, "Auth.JWT.RefreshToken");
 
-        return Result.Success(new
+        return new OkObjectResult(new
         {
             message = "Welcome aboard! Your account has been created successfully",
             data = signUpResponse
