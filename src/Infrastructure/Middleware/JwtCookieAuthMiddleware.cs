@@ -22,14 +22,23 @@ public class JwtCookieAuthMiddleware
         var accessToken = context.Request.Cookies["Auth.JWT.AccessToken"];
         var refreshToken = context.Request.Cookies["Auth.JWT.RefreshToken"];
 
-        var userId = jWTService.ValidateJWTToken(accessToken!);
-        if (string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(refreshToken))
-        {
-            var newAccessToken = await jWTService.RefreshTokenAsync(refreshToken);
+        bool isExpired = true;
+        string? userId = null;
 
-            if (!string.IsNullOrEmpty(newAccessToken))
+        if (!string.IsNullOrEmpty(accessToken))
+        {
+            userId = jWTService.ValidateJWTToken(accessToken, out isExpired);
+        }
+
+        if (isExpired && !string.IsNullOrEmpty(refreshToken))
+        {
+            var refreshResult = await jWTService.RefreshTokenAsync(refreshToken);
+
+            if (refreshResult != null)
             {
-                userId = jWTService.ValidateJWTToken(newAccessToken);
+                var tokens = (dynamic)refreshResult!;
+                accessToken = tokens.accessToken;
+                userId = jWTService.ValidateJWTToken(accessToken, out isExpired);
             }
         }
 
@@ -39,11 +48,11 @@ public class JwtCookieAuthMiddleware
             if (user != null)
             {
                 var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(ClaimTypes.Email, user.Email!)
-            };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.Name, user.UserName!),
+                    new Claim(ClaimTypes.Email, user.Email!)
+                };
 
                 var identity = new ClaimsIdentity(claims, "Bearer");
                 var principal = new ClaimsPrincipal(identity);
@@ -54,6 +63,4 @@ public class JwtCookieAuthMiddleware
 
         await _next(context);
     }
-
-
 }

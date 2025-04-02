@@ -22,6 +22,7 @@ public class JWTRepository : IJWTService
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
     }
+
     public string GenerateToken(ApplicationUser user, string tokenName, DateTimeOffset validTime)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
@@ -45,8 +46,9 @@ public class JWTRepository : IJWTService
         return jwt;
     }
 
-    public string? ValidateJWTToken(string token)
+    public string? ValidateJWTToken(string token, out bool isExpired)
     {
+        isExpired = false;
         if (string.IsNullOrEmpty(token))
             return null;
 
@@ -55,6 +57,19 @@ public class JWTRepository : IJWTService
 
         try
         {
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+            if (expClaim != null && long.TryParse(expClaim, out var exp))
+            {
+                var expirationDate = DateTimeOffset.FromUnixTimeSeconds(exp);
+                if (expirationDate < DateTimeOffset.UtcNow)
+                {
+                    isExpired = true;
+                    return null;
+                }
+            }
+
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -68,11 +83,14 @@ public class JWTRepository : IJWTService
             };
 
             tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+            jwtToken = (JwtSecurityToken)validatedToken;
 
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-
-            return userId;
+            return jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            isExpired = true;
+            return null;
         }
         catch (Exception ex)
         {
@@ -80,13 +98,22 @@ public class JWTRepository : IJWTService
         }
     }
 
+
     public async Task<string?> RefreshTokenAsync(string refreshToken)
     {
-        var tokenValidationResult = ValidateJWTToken(refreshToken);
-        if (string.IsNullOrEmpty(tokenValidationResult))
+        bool isExpired;
+        var userId = ValidateJWTToken(refreshToken, out isExpired);
+
+        if (isExpired)
+        {
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(userId))
             return null;
 
-        var user = await _userManager.FindByIdAsync(tokenValidationResult!);
+        var user = await _userManager.FindByIdAsync(userId);
         return GenerateToken(user!, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
     }
+
 }
