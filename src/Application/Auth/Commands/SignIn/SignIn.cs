@@ -18,7 +18,20 @@ public record SignInCommand : IRequest<ActionResult>
 
 public class SignInCommandValidator : AbstractValidator<SignInCommand>
 {
+    public SignInCommandValidator()
+    {
+        RuleFor(x => x.Email)
+            .EmailAddress()
+            .WithMessage("The email field must be a valid email address")
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("The email field is required");
 
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .NotNull()
+            .WithMessage("The password field is required");
+    }
 }
 
 public class SignInCommandHandler : IRequestHandler<SignInCommand, ActionResult>
@@ -41,13 +54,14 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, ActionResult>
         if (!signInResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
             var result = 
                 new ObjectResult(new
                 {
                     message = "Unauthorized access. The email or password is incorrect."
                 })
                 {
-                    statusCode = StatusCodes.Status401Unauthorized
+                    StatusCode = StatusCodes.Status401Unauthorized
                 };
 
             return result;

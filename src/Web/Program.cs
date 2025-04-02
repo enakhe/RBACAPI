@@ -65,14 +65,15 @@ else
     app.UseHsts();
 }
 
+app.UseMiddleware<ErrorMiddleware>();
+
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseOutputCache();
 app.UseMiddleware<JwtCookieAuthMiddleware>();
-app.UseMiddleware<ErrorMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
 
 app.UseSwaggerUi(settings =>
 {

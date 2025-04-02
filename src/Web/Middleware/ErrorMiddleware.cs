@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using RBACAPI.Application.Common.Exceptions;
 
 namespace RBACAPI.Web.Middleware
 {
@@ -39,6 +40,12 @@ namespace RBACAPI.Web.Middleware
 
             switch (ex)
             {
+                case ValidationException validationException:
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    problemDetails.Status = StatusCodes.Status400BadRequest;
+                    problemDetails.Extensions.Add("errors", validationException.Errors);
+                    break;
+
                 case InvalidOperationException:
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     problemDetails.Title = "Invalid operation";

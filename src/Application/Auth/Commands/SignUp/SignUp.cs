@@ -38,7 +38,10 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
             .NotNull()
             .WithMessage("The password field is required")
             .MinimumLength(6)
-            .WithMessage("The minimum length of the password must be more than six characters");
+            .WithMessage("The minimum length of the password must be more than six characters")
+            .Matches("[A-Z]").WithMessage("The password must contain at least one uppercase letter")
+            .Matches("[a-z]").WithMessage("The password must contain at least one lowercase letter")
+            .Matches("[0-9]").WithMessage("The password must contain at least one digit");
 
         RuleFor(x => x.ConfirmPassword)
             .NotNull()
@@ -54,16 +57,13 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
 {
     private readonly IIdentityService _identityService;
     private readonly ICookieService _cookieService;
-    public SignUpCommandHandler(IIdentityService identityService, ICookieService cookieService)
-    {
-        _identityService = identityService;
-        _cookieService = cookieService;
-    }
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor, ICookieService cookieService)
+    public SignUpCommandHandler(IIdentityService identityService, ICookieService cookieService, IHttpContextAccessor httpContextAccessor)
     {
         _identityService = identityService;
         _cookieService = cookieService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Result> Handle(SignUpCommand request, CancellationToken cancellationToken)
@@ -71,6 +71,7 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
         var signUpResponse = await _identityService.SignUpAsync(request.Email, request.Password);
         if (!signUpResponse.Succeeded)
         {
+            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return Result.Failure(signUpResponse.Errors);
         }
 
