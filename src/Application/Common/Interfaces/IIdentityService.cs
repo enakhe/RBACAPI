@@ -14,9 +14,9 @@ public interface IIdentityService
 
     Task<Result> DeleteUserAsync(string userId);
 
-    Task<Result> SignInAsync(string email, string password);
+    Task<AuthResult> SignInAsync(string email, string password);
 
-    Task<Result> SignUpAsync(string email, string password);
+    Task<AuthResult> SignUpAsync(string email, string password);
 
     Task<Result> SendOTPAsync(string email);
 

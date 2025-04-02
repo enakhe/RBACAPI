@@ -27,7 +27,7 @@ public class Auth : EndpointGroupBase
     }
 
     [OutputCache]
-    public Task<IActionResult> SignIn(ISender send, SignInCommand command)
+    public Task<ActionResult> SignIn(ISender send, SignInCommand command)
     {
         return send.Send(command);
     }

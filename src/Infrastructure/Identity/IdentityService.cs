@@ -110,95 +110,40 @@ public class IdentityService : IIdentityService
         return userId!;
     }
 
-    public async Task<Result> SignInAsync(string email, string password)
+    public async Task<AuthResult> SignInAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null)
+        if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
         {
-            IEnumerable<string> errors = new List<string> { "Invalid sign-in attempt. The email or password is incorrect" };
-            return Result.Failure(errors);
+            return AuthResult.Failure(new List<string> { "Invalid sign-in attempt. The email or password is incorrect" });
         }
 
-        var passwordValid = await _userManager.CheckPasswordAsync(user!, password);
-        if (!passwordValid)
-        {
-            IEnumerable<string> errors = new List<string> { "Invalid sign-in attempt. The email or password is incorrect" };
-            return Result.Failure(errors);
-        }
+        var accessToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
+        var refreshToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddDays(7));
 
-        var accessToken = _jWTService.GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
-        var refreshToken = _jWTService.GenerateToken(user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
-        user.LastLoginDate = DateTime.Now;
+        user.LastLoginDate = DateTime.UtcNow;
         await _userManager.UpdateAsync(user);
 
-        var context = _httpContextAccessor.HttpContext;
-        if (context != null)
-        {
-            context.Response.Cookies.Append("Auth.JWT.AccessToken", accessToken, new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddMinutes(30),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                IsEssential = true
-            });
-
-            context.Response.Cookies.Append("Auth.JWT.RefreshToken", refreshToken, new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                IsEssential = true
-            });
-        }
-
-        return Result.Success(new
-        {
-            accessToken,
-            refreshToken,
-            message = "Great news! You’ve logged in successfully. Let’s get started!"
-        });
+        return AuthResult.Success(accessToken, refreshToken);
     }
 
-    public async Task<Result> SignUpAsync(string email, string password)
+
+    public async Task<AuthResult> SignUpAsync(string email, string password)
     {
         var foundUser = await _userManager.FindByEmailAsync(email);
         if (foundUser != null)
-            return Result.Failure(new List<string> { "The provided email is already used" });
+            return AuthResult.Failure(new List<string> { "The provided email is already used" });
 
         var user = new ApplicationUser { Id = Guid.NewGuid().ToString(), UserName = email, Email = email };
         var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
-            return Result.Failure(result.Errors.Select(e => e.Description));
+            return AuthResult.Failure(result.Errors.Select(e => e.Description));
 
-        // Generate Tokens
-        var accessToken = _jWTService.GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
-        var refreshToken = _jWTService.GenerateToken(user, "RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
+        var accessToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
+        var refreshToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddDays(7));
 
-        var context = _httpContextAccessor.HttpContext;
-        if (context != null)
-        {
-            context.Response.Cookies.Append("Auth.JWT.AccessToken", accessToken, new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddMinutes(30),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                IsEssential = true
-            });
-
-            context.Response.Cookies.Append("Auth.JWT.RefreshToken", refreshToken, new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                IsEssential = true
-            });
-        }
-        return Result.Success(new { accessToken, refreshToken, message = "User signed up successfully" });
+        return AuthResult.Success(accessToken, refreshToken);
     }
 
     public async Task<Result> SendOTPAsync(string email)
@@ -211,7 +156,7 @@ public class IdentityService : IIdentityService
         }
 
         var userId = await _userManager.GetUserIdAsync(user);
-        var otpToken = _jWTService.GenerateToken(user, "OTPToken", DateTimeOffset.UtcNow.AddMinutes(5));
+        var otpToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(5));
         var code = _otpService.GenerateOTP(userId, email, otpToken, DateTime.UtcNow);
 
         return Result.Success(new

@@ -36,8 +36,7 @@ public class JwtCookieAuthMiddleware
 
             if (refreshResult != null)
             {
-                var tokens = (dynamic)refreshResult!;
-                accessToken = tokens.accessToken;
+                accessToken = refreshResult;
                 userId = jWTService.ValidateJWTToken(accessToken, out isExpired);
             }
         }

@@ -60,7 +60,7 @@ public class OAuthService : IOAuthService
 
         if (user is not null)
         {
-            var token = _jWTService.GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+            var token = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
             return new GoogleSignInResponse
             {
                 Succeeded = true,
@@ -147,7 +147,7 @@ public class OAuthService : IOAuthService
 
         if (user is not null)
         {
-            var token = _jWTService.GenerateToken(user, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+            var token = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
             var data = new FacebookSignInResponse
             {
                 Succeeded = true,

@@ -53,14 +53,17 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
 public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
 {
     private readonly IIdentityService _identityService;
-    public SignUpCommandHandler(IIdentityService identityService)
+    private readonly ICookieService _cookieService;
+    public SignUpCommandHandler(IIdentityService identityService, ICookieService cookieService)
     {
         _identityService = identityService;
+        _cookieService = cookieService;
     }
 
-    public SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
+    public SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor, ICookieService cookieService)
     {
         _identityService = identityService;
+        _cookieService = cookieService;
     }
 
     public async Task<Result> Handle(SignUpCommand request, CancellationToken cancellationToken)
@@ -71,9 +74,13 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
             return Result.Failure(signUpResponse.Errors);
         }
 
+        _cookieService.SetCookie(signUpResponse.AccessToken, "Auth.JWT.AccessToken");
+        _cookieService.SetCookie(signUpResponse.RefreshToken, "Auth.JWT.RefreshToken");
+
         return Result.Success(new
         {
-            data = signUpResponse.Response
+            message = "Welcome aboard! Your account has been created successfully",
+            data = signUpResponse
         });
     }
 }

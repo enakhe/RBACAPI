@@ -23,7 +23,7 @@ public class JWTRepository : IJWTService
         _userManager = userManager;
     }
 
-    public string GenerateToken(ApplicationUser user, string tokenName, DateTimeOffset validTime)
+    public string GenerateToken(ApplicationUser user, DateTimeOffset validTime)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -113,7 +113,7 @@ public class JWTRepository : IJWTService
             return null;
 
         var user = await _userManager.FindByIdAsync(userId);
-        return GenerateToken(user!, "AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        return GenerateToken(user!, DateTimeOffset.UtcNow.AddMinutes(30));
     }
 
 }

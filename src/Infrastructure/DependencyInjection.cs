@@ -89,6 +89,7 @@ public static class DependencyInjection
         services.AddScoped<IOAuthService, OAuthService>();
         services.AddScoped<IOTPService, OTPService>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ICookieService, CookieService>();
 
         services.AddTransient<IUserEmailStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
         services.AddTransient<IUserStore<ApplicationUser>, UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>>();
