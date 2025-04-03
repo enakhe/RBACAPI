@@ -39,7 +39,8 @@ public class AuthorizeUserAttribute : ActionFilterAttribute
             var response = new
             {
                 title = "Unauthorized",
-                status = (int)HttpStatusCode.Unauthorized
+                status = (int)HttpStatusCode.Unauthorized,
+                detail = "Unauthorized access. The email or password is incorrect."
             };
 
             context.Result = new ContentResult

@@ -55,17 +55,15 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, ActionResult>
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
-            var result = 
+            return 
                 new ObjectResult(new
                 {
-                    message = "Unauthorized access. The email or password is incorrect.",
+                    message = "Unauthorized access",
                     errors = signInResponse.Errors
                 })
                 {
                     StatusCode = StatusCodes.Status401Unauthorized
                 };
-
-            return result;
         }
 
         _cookieService.SetCookie(signInResponse.AccessToken, "Auth.JWT.AccessToken");

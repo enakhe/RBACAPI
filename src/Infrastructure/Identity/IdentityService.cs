@@ -151,7 +151,7 @@ public class IdentityService : IIdentityService
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            IEnumerable<string> errors = new List<string> { "Invalid login attempt" };
+            IEnumerable<string> errors = new List<string> { "User not found. Please check the provided email address and try again." };
             return Result.Failure(errors);
         }
 
@@ -162,7 +162,6 @@ public class IdentityService : IIdentityService
         return Result.Success(new
         {
             Code = code,
-            Message = "Successfully sent OTP code"
         });
     }
 

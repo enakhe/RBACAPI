@@ -34,13 +34,21 @@ public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCo
             .NotEmpty();
 
         RuleFor(x => x.NewPassword)
+            .NotEmpty()
             .NotNull()
-            .NotEmpty();
+            .WithMessage("The password field is required")
+            .MinimumLength(6)
+            .WithMessage("The minimum length of the password must be more than six characters")
+            .Matches("[A-Z]").WithMessage("The password must contain at least one uppercase letter")
+            .Matches("[a-z]").WithMessage("The password must contain at least one lowercase letter")
+            .Matches("[0-9]").WithMessage("The password must contain at least one digit");
 
         RuleFor(x => x.ConfirmPassword)
-            .Equal(x => x.ConfirmPassword)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("The confirmation password field is required.")
+            .Matches(x => x.NewPassword)
+            .WithMessage("The password and confirmation password do not match.");
     }
 }
 
@@ -62,12 +70,6 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
 
         if (string.IsNullOrEmpty(userId))
             throw new UnauthorizedAccessException("Invalid request");
-
-        if (request.NewPassword != request.ConfirmPassword)
-            return new BadRequestObjectResult(new
-            {
-                error = "The new password and confirmation password do not match."
-            });
 
         var changePasswordResponse = await _identityService.ChangePassword(userId, request.Password, request.NewPassword);
         if (!changePasswordResponse.Succeeded)
