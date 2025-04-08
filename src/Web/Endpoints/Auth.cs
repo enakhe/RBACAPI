@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.OutputCaching;
 using RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
 using RBACAPI.Application.Auth.Commands.LogOut;
 using RBACAPI.Application.Auth.Commands.ResetPassword;
+using RBACAPI.Application.Auth.Commands.SendOTP;
+using RBACAPI.Application.Auth.Commands.SignIn;
 using RBACAPI.Application.Common.Models;
 using RBACAPI.Application.Common.Security;
-using RBACAPI.Application.User.Commands.Login;
-using RBACAPI.Application.User.Commands.SendOTP;
 using RBACAPI.Application.User.Commands.SignUp;
 using RBACAPI.Application.User.Commands.VerifyEmail;
 
-namespace RBACAPI.Web.Endpoints;
+namespace RBACAPI.WebAPI.Endpoints;
 
 public class Auth : EndpointGroupBase
 {
@@ -38,9 +38,9 @@ public class Auth : EndpointGroupBase
     }
 
     [AuthorizeUser]
-    public Task<ActionResult> SendOTP(ISender send, SendOTPCommand command)
+    public Task<ActionResult> SendOTP(ISender send)
     {
-        return send.Send(command);
+        return send.Send(new SendOTPCommand());
     }
 
     [AuthorizeUser]

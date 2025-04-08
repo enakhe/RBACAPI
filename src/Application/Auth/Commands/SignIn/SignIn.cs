@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
 
-namespace RBACAPI.Application.User.Commands.Login;
+namespace RBACAPI.Application.Auth.Commands.SignIn;
 
 public record SignInCommand : IRequest<ActionResult>
 {
@@ -34,18 +34,11 @@ public class SignInCommandValidator : AbstractValidator<SignInCommand>
     }
 }
 
-public class SignInCommandHandler : IRequestHandler<SignInCommand, ActionResult>
+public class SignInCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor, ICookieService cookieService) : IRequestHandler<SignInCommand, ActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ICookieService _cookieService;
-
-    public SignInCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor, ICookieService cookieService)
-    {
-        _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
-        _cookieService = cookieService;
-    }
+    private readonly IIdentityService _identityService = identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ICookieService _cookieService = cookieService;
 
     public async Task<ActionResult> Handle(SignInCommand request, CancellationToken cancellationToken)
     {

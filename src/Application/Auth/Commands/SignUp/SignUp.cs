@@ -73,7 +73,7 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
         if (!signUpResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            var result =
+            return
                 new ObjectResult(new
                 {
                     message = "One or more validation failures have occurred",
@@ -82,8 +82,6 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
                 {
                     StatusCode = StatusCodes.Status400BadRequest
                 };
-
-            return result;
         }
 
         _cookieService.SetCookie(signUpResponse.AccessToken, "Auth.JWT.AccessToken");
