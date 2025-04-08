@@ -41,7 +41,6 @@ public class SendOTPCommandHandler(IIdentityService identityService, IHttpContex
 
         return new OkObjectResult(new
         {
-            message = "Great news! Your one-time password (OTP) has been generated and sent to your email inbox. Please check your email (and spam folder, if necessary) and use the OTP to verify your identity.",
             data = otpResponse
         });
     }

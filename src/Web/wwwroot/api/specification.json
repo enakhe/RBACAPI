@@ -566,11 +566,17 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
+          "email",
           "code"
         ],
         "properties": {
           "code": {
             "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
             "minLength": 1
           }
         }

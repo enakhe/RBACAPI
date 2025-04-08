@@ -86,7 +86,6 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
 
         return new OkObjectResult(new
         {
-            message = "Welcome aboard! Your account has been created successfully",
             data = signUpResponse
         });
     }

@@ -10,6 +10,7 @@ using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
 using RBACAPI.Infrastructure.Interface;
 using static System.Net.WebRequestMethods;
+using Newtonsoft.Json;
 
 namespace RBACAPI.Infrastructure.Identity;
 
@@ -50,7 +51,7 @@ public class IdentityService : IIdentityService
         _redisDb = redis.GetDatabase();
     }
 
-    private static string GetRedisKey(string userId) => $"userId:{userId}";
+    private static string GetRedisKey(string userId) => userId;
 
     public async Task<string?> GetUserNameAsync(string userId)
     {
@@ -122,14 +123,12 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
-        {
-            return AuthResult.Failure(new List<string> { "Invalid sign-in attempt. The email or password is incorrect" });
-        }
+            return AuthResult.Failure(["Invalid sign-in attempt. The email or password is incorrect"]);
 
-        await _redisDb.StringSetAsync(GetRedisKey(user.Id), user.Id, TimeSpan.FromMinutes(5));
+        SaveUserToRedisCacheAsync(user);
 
         if (!user.EmailConfirmed)
-            return AuthResult.Failure(new List<string> { "Invalid sign-in attempt. Your email isn't verified. Kindly verify your email address" });
+            return AuthResult.Failure(["Invalid sign-in attempt. Your email isn't verified. Kindly verify your email address"]);
 
         var accessToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
         var refreshToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddDays(7));
@@ -153,11 +152,12 @@ public class IdentityService : IIdentityService
         if (!result.Succeeded)
             return Result.Failure(result.Errors.Select(e => e.Description));
 
+        SaveUserToRedisCacheAsync(user);
 
-        await _redisDb.StringSetAsync(GetRedisKey(user.Id), user.Id, TimeSpan.FromMinutes(5));
         return Result.Success(new
         {
            title = "Account created sucessfully",
+           message = "Welcome aboard! Your account has been created successfully",
         });
     }
 
@@ -165,33 +165,21 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.FindByEmailAsync(email.Trim().ToLowerInvariant());
         if (user == null)
-        {
-            IEnumerable<string> errors = ["Unable to send OTP. Please check the provided email address and try again."];
-            return Result.Failure(errors);
-        }
+            return Result.Failure(["Unable to send OTP. Please check the provided email address and try again."]);
+        
+        var cachedUser = await GetUserFromRedisCacheAsync(user.Id);
 
-        var redisKey = GetRedisKey(user.Id);
-        var savedUserId = await _redisDb.StringGetAsync(redisKey);
+        if (cachedUser == null || cachedUser.Id != user.Id)
+            return Result.Failure(["Unable to send OTP. Please check the provided email address and try again."]);
 
-        if(string.IsNullOrEmpty(savedUserId))
-        {
-            IEnumerable<string> errors = ["Unable to send OTP. Please check the provided email address and try again."];
-            return Result.Failure(errors);
-        }
-
-        if (savedUserId == user.Id)
-        {
-            IEnumerable<string> errors = ["Unable to send OTP. Please check the provided email address and try again."];
-            return Result.Failure(errors);
-        }
-
-        var userId = await _userManager.GetUserIdAsync(user);
         var otpToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(5));
-        var code = _otpService.GenerateOTPAsync(userId, email.Trim().ToLowerInvariant(), otpToken, DateTimeOffset.UtcNow);
+        var code = _otpService.GenerateOTPAsync(cachedUser.Id, email.Trim().ToLowerInvariant(), otpToken, DateTimeOffset.UtcNow);
 
         return Result.Success(new
         {
-            Code = code,
+            message = "Great news! Your one-time password (OTP) has been generated and sent to your email inbox. " +
+                      "Please check your email (and spam folder, if necessary) and use the OTP to verify your identity.",
+            code = code.Result,
         });
     }
 
@@ -199,10 +187,7 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
-        {
-            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
-            return Result.Failure(errors);
-        }
+            return Result.Failure(["Unable to send token. Please check the provided email address and try again."]);
 
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -218,25 +203,16 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-        {
-            IEnumerable<string> errors = new List<string> { "Invalid login attempt" };
-            return Result.Failure(errors);
-        }
+            return Result.Failure(["Unable to verify OTP. Please check the provided email address or code and try again."]);
 
-        var userId = await _userManager.GetUserIdAsync(user);
-        var token = _httpContextAccessor.HttpContext!.Request.Cookies["Auth.JWT.OTPToken"];
-        var otpData = _otpService.GetOtpCookieData(_httpContextAccessor.HttpContext);
-        if (otpData == null)
-        {
-            IEnumerable<string> errors = new List<string> { "Invalid code" };
-            return Result.Failure(errors);
-        }
+        var cachedUser = await GetUserFromRedisCacheAsync(user.Id);
+        if(cachedUser == null || cachedUser.Id != user.Id)
+            return Result.Failure(["Unable to verify OTP. Please check the provided email address or code and try again."]);
 
         var verifyEmailResponse = await _otpService.ValidateOTPAsync(email, otp);
         if (!verifyEmailResponse.Succeeded)
         {
-            IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };
-            return Result.Failure(errors);
+            return Result.Failure(verifyEmailResponse.Errors);
         }
 
         user.EmailConfirmed = true;
@@ -377,5 +353,17 @@ public class IdentityService : IIdentityService
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
         return (IUserEmailStore<ApplicationUser>)_userStore;
+    }
+
+    private async void SaveUserToRedisCacheAsync(ApplicationUser user)
+    {
+        var serializedUser = JsonConvert.SerializeObject(user);
+        await _redisDb.StringSetAsync(GetRedisKey(user.Id), serializedUser, TimeSpan.FromDays(7));
+    }
+
+    public async Task<ApplicationUser?> GetUserFromRedisCacheAsync(string userId)
+    {
+        var userData = await _redisDb.StringGetAsync(userId);
+        return !userData.IsNullOrEmpty ? JsonConvert.DeserializeObject<ApplicationUser>(userData!) : null;
     }
 }

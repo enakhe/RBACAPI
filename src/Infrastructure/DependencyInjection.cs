@@ -15,6 +15,7 @@ using RBACAPI.Infrastructure.Data.Interceptors;
 using RBACAPI.Infrastructure.Identity;
 using RBACAPI.Infrastructure.Interface;
 using RBACAPI.Infrastructure.Repository;
+using StackExchange.Redis;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -71,6 +72,13 @@ public static class DependencyInjection
             facebookOptions.AppId = configuration["Authentication:Facebook:AppId"]!;
             facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"]!;
         });
+
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+            var redisConfiguration = configuration.GetConnectionString("cache");
+            return ConnectionMultiplexer.Connect(redisConfiguration!);
+        });
+
 
         services.AddAuthorizationBuilder();
 

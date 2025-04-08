@@ -47,13 +47,13 @@ public class OTPService : IOTPService
 
         if (string.IsNullOrEmpty(savedOtp))
         {
-            IEnumerable<string> errors = new List<string> { "OTP code has expired or was never issued, kindly request another one" };
+            IEnumerable<string> errors = ["OTP code has expired or was never issued, kindly request another one"];
             return Result.Failure(errors);
         }
 
         if (otp != savedOtp)
         {
-            IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };
+            IEnumerable<string> errors = ["Verification of OTP failed"];
             return Result.Failure(errors);
         }
 
