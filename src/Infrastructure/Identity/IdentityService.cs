@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using System.Text;
+using StackExchange.Redis;
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
 using RBACAPI.Infrastructure.Interface;
+using static System.Net.WebRequestMethods;
 
 namespace RBACAPI.Infrastructure.Identity;
 
@@ -21,6 +24,7 @@ public class IdentityService : IIdentityService
     private readonly IUserStore<ApplicationUser> _userStore;
     private readonly IUserEmailStore<ApplicationUser> _emailStore;
     private readonly IOTPService _otpService;
+    private readonly IDatabase _redisDb;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -31,7 +35,8 @@ public class IdentityService : IIdentityService
         IHttpContextAccessor httpContextAccessor,
         IUserStore<ApplicationUser> userStore,
         IUserEmailStore<ApplicationUser> emailStore,
-        IOTPService otpService)
+        IOTPService otpService,
+        IConnectionMultiplexer redis)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
@@ -42,7 +47,10 @@ public class IdentityService : IIdentityService
         _userStore = userStore;
         _emailStore = emailStore;
         _otpService = otpService;
+        _redisDb = redis.GetDatabase();
     }
+
+    private static string GetRedisKey(string userId) => $"userId:{userId}";
 
     public async Task<string?> GetUserNameAsync(string userId)
     {
@@ -118,6 +126,11 @@ public class IdentityService : IIdentityService
             return AuthResult.Failure(new List<string> { "Invalid sign-in attempt. The email or password is incorrect" });
         }
 
+        await _redisDb.StringSetAsync(GetRedisKey(user.Id), user.Id, TimeSpan.FromMinutes(5));
+
+        if (!user.EmailConfirmed)
+            return AuthResult.Failure(new List<string> { "Invalid sign-in attempt. Your email isn't verified. Kindly verify your email address" });
+
         var accessToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
         var refreshToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddDays(7));
 
@@ -128,36 +141,53 @@ public class IdentityService : IIdentityService
     }
 
 
-    public async Task<AuthResult> SignUpAsync(string email, string password)
+    public async Task<Result> SignUpAsync(string email, string password)
     {
         var foundUser = await _userManager.FindByEmailAsync(email);
         if (foundUser != null)
-            return AuthResult.Failure(new List<string> { "The provided email is already used" });
+            return Result.Failure(new List<string> { "The provided email is already used" });
 
         var user = new ApplicationUser { Id = Guid.NewGuid().ToString(), UserName = email, Email = email };
         var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
-            return AuthResult.Failure(result.Errors.Select(e => e.Description));
+            return Result.Failure(result.Errors.Select(e => e.Description));
 
-        var accessToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(30));
-        var refreshToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddDays(7));
 
-        return AuthResult.Success(accessToken, refreshToken);
+        await _redisDb.StringSetAsync(GetRedisKey(user.Id), user.Id, TimeSpan.FromMinutes(5));
+        return Result.Success(new
+        {
+           title = "Account created sucessfully",
+        });
     }
 
     public async Task<Result> SendOTPAsync(string email)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email.Trim().ToLowerInvariant());
         if (user == null)
         {
-            IEnumerable<string> errors = new List<string> { "User not found. Please check the provided email address and try again." };
+            IEnumerable<string> errors = ["Unable to send OTP. Please check the provided email address and try again."];
+            return Result.Failure(errors);
+        }
+
+        var redisKey = GetRedisKey(user.Id);
+        var savedUserId = await _redisDb.StringGetAsync(redisKey);
+
+        if(string.IsNullOrEmpty(savedUserId))
+        {
+            IEnumerable<string> errors = ["Unable to send OTP. Please check the provided email address and try again."];
+            return Result.Failure(errors);
+        }
+
+        if (savedUserId == user.Id)
+        {
+            IEnumerable<string> errors = ["Unable to send OTP. Please check the provided email address and try again."];
             return Result.Failure(errors);
         }
 
         var userId = await _userManager.GetUserIdAsync(user);
         var otpToken = _jWTService.GenerateToken(user, DateTimeOffset.UtcNow.AddMinutes(5));
-        var code = _otpService.GenerateOTP(userId, email, otpToken, DateTime.UtcNow);
+        var code = _otpService.GenerateOTPAsync(userId, email.Trim().ToLowerInvariant(), otpToken, DateTimeOffset.UtcNow);
 
         return Result.Success(new
         {
@@ -202,7 +232,7 @@ public class IdentityService : IIdentityService
             return Result.Failure(errors);
         }
 
-        var verifyEmailResponse = _otpService.ValidateOTP(userId, email, otpData, token!);
+        var verifyEmailResponse = await _otpService.ValidateOTPAsync(email, otp);
         if (!verifyEmailResponse.Succeeded)
         {
             IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };

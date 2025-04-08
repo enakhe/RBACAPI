@@ -84,9 +84,6 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
                 };
         }
 
-        _cookieService.SetCookie(signUpResponse.AccessToken, "Auth.JWT.AccessToken");
-        _cookieService.SetCookie(signUpResponse.RefreshToken, "Auth.JWT.RefreshToken");
-
         return new OkObjectResult(new
         {
             message = "Welcome aboard! Your account has been created successfully",

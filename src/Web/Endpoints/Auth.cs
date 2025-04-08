@@ -38,9 +38,9 @@ public class Auth : EndpointGroupBase
     }
 
     [AuthorizeUser]
-    public Task<ActionResult> SendOTP(ISender send)
+    public Task<ActionResult> SendOTP(ISender send, SendOTPCommand command)
     {
-        return send.Send(new SendOTPCommand());
+        return send.Send(command);
     }
 
     [AuthorizeUser]

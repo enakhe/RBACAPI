@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddRedisOutputCache("cache");
+builder.AddRedisClient("cache");
 
 // Add services to the container.
 builder.Services.AddKeyVaultIfConfigured(builder.Configuration);

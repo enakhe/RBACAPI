@@ -7,21 +7,26 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
+using StackExchange.Redis;
 
 namespace RBACAPI.Infrastructure.Repository;
 public class OTPService : IOTPService
 {
     private readonly IConfiguration configuration;
+    private readonly IDatabase _redisDb;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-    public OTPService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+    public OTPService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IConnectionMultiplexer redis)
     {
         this.configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
+        _redisDb = redis.GetDatabase();
     }
 
-    public string GenerateOTP(string userId, string email, string token, DateTime expiryDate)
+    private static string GetRedisKey(string email) => $"otp:{email.ToLower()}";
+
+    public async Task<string> GenerateOTPAsync(string userId, string email, string token, DateTimeOffset expiryDate)
     {
         string data = $"{userId}{email}{expiryDate:yyyy-MM-dd HH:mm:ss}{token}";
 
@@ -30,30 +35,29 @@ public class OTPService : IOTPService
             byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
             long hashValue = BitConverter.ToInt64(hashBytes, 0);
             int otp = Math.Abs((int)(hashValue % 100000));
-            SetOtpCookie(_httpContextAccessor.HttpContext, otp.ToString("D5"));
+            await _redisDb.StringSetAsync(GetRedisKey(email), otp, TimeSpan.FromMinutes(5));
             return otp.ToString("D5");
         }
     }
 
-    public Result ValidateOTP(string userId, string email, OtpCookieData otpData, string token)
+    public async Task<Result> ValidateOTPAsync(string email, string otp)
     {
+        var redisKey = GetRedisKey(email);
+        var savedOtp = await _redisDb.StringGetAsync(redisKey);
 
-        if (DateTime.UtcNow > otpData.ExpiresAt)
+        if (string.IsNullOrEmpty(savedOtp))
         {
-            IEnumerable<string> errors = new List<string> { "OTP code has expired, kindly request another one" };
+            IEnumerable<string> errors = new List<string> { "OTP code has expired or was never issued, kindly request another one" };
             return Result.Failure(errors);
         }
 
-        string expectedOtp = GenerateOTP(userId, email, token, otpData.IssuedAt);
-
-        bool isValid = otpData.Otp == expectedOtp;
-
-        if (!isValid)
+        if (otp != savedOtp)
         {
             IEnumerable<string> errors = new List<string> { "Verification of OTP failed" };
             return Result.Failure(errors);
         }
 
+        await _redisDb.KeyDeleteAsync(redisKey);
         return Result.Success(new
         {
             Message = "Sucessfully validated email"

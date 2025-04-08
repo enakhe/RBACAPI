@@ -16,7 +16,7 @@ public class CookieService : ICookieService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public void SetCookie(string data, string cookieName)
+    public void SetCookie(string data, string cookieName, DateTimeOffset date)
     {
         var context = _httpContextAccessor.HttpContext!;
         context.Response.Cookies.Append(cookieName, data, new CookieOptions

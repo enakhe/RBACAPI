@@ -7,7 +7,11 @@ using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.Auth.Commands.SendOTP;
 
-public record SendOTPCommand : IRequest<ActionResult>;
+public record SendOTPCommand : IRequest<ActionResult>
+{
+    [Required, EmailAddress]
+    public required string Email { get; set; }
+}
 
 public class SendOTPCommandValidator : AbstractValidator<SendOTPCommand>
 {
@@ -23,21 +27,7 @@ public class SendOTPCommandHandler(IIdentityService identityService, IHttpContex
 
     public async Task<ActionResult> Handle(SendOTPCommand request, CancellationToken cancellationToken)
     {
-        var httpContext = _httpContextAccessor.HttpContext;
-        var email = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-
-        if (string.IsNullOrEmpty(email))
-            return
-                new ObjectResult(new
-                {
-                    message = "Unauthorized access",
-                    errors = "Invalid attempt. The email is not provided or incorrect"
-                })
-                {
-                    StatusCode = StatusCodes.Status400BadRequest
-                };
-
-        var otpResponse = await _identityService.SendOTPAsync(email);
+        var otpResponse = await _identityService.SendOTPAsync(request.Email);
 
         if (!otpResponse.Succeeded)
         {

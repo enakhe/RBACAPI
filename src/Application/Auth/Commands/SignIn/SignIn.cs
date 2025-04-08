@@ -59,8 +59,8 @@ public class SignInCommandHandler(IIdentityService identityService, IHttpContext
                 };
         }
 
-        _cookieService.SetCookie(signInResponse.AccessToken, "Auth.JWT.AccessToken");
-        _cookieService.SetCookie(signInResponse.RefreshToken, "Auth.JWT.RefreshToken");
+        _cookieService.SetCookie(signInResponse.AccessToken, "Auth.JWT.AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        _cookieService.SetCookie(signInResponse.RefreshToken, "Auth.JWT.RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
 
         return new OkObjectResult(new
         {

@@ -16,7 +16,7 @@ public interface IIdentityService
 
     Task<AuthResult> SignInAsync(string email, string password);
 
-    Task<AuthResult> SignUpAsync(string email, string password);
+    Task<Result> SignUpAsync(string email, string password);
 
     Task<Result> SendOTPAsync(string email);
 
