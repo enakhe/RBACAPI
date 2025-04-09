@@ -37,13 +37,21 @@ public class GetPasswordResetTokenCommandHandler(IIdentityService identityServic
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = getResetPasswordResponse.Errors
+                message = getResetPasswordResponse.Message,
+                succeded = getResetPasswordResponse.Succeeded,
+                errors = getResetPasswordResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            data = getResetPasswordResponse
+            data = new
+            {
+                getResetPasswordResponse.Title,
+                getResetPasswordResponse.Message,
+                getResetPasswordResponse.Succeeded,
+                getResetPasswordResponse.Response
+            }
         });
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
 
@@ -13,24 +14,20 @@ public class Disable2FAuthenticationCommandValidator : AbstractValidator<Disable
     }
 }
 
-public class Disable2FAuthenticationCommandHandler : IRequestHandler<Disable2FAuthenticationCommand, IActionResult>
+public class Disable2FAuthenticationCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor, IAccountService identityService) : IRequestHandler<Disable2FAuthenticationCommand, IActionResult>
 {
-    private readonly IAccountService _accountService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IIdentityService _identityService;
-
-    public Disable2FAuthenticationCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor, IIdentityService identityService)
-    {
-        _accountService = accountService;
-        _httpContextAccessor = httpContextAccessor;
-        _identityService = identityService;
-    }
+    private readonly IAccountService _accountService = accountService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IAccountService _identityService = identityService;
 
     public async Task<IActionResult> Handle(Disable2FAuthenticationCommand request, CancellationToken cancellationToken)
     {
-        string userId = _identityService.GetUserId();
+        var httpContext = _httpContextAccessor.HttpContext;
+        var user = httpContext?.User;
+        var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("We couldn’t get your recovery codes. Please ensure you're authenticated");
+            return new UnauthorizedResult();
 
         var disable2FAResponse = await _accountService.Disable2FAuthentication(userId);
         if (!disable2FAResponse.Succeeded)
@@ -38,13 +35,21 @@ public class Disable2FAuthenticationCommandHandler : IRequestHandler<Disable2FAu
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = disable2FAResponse.Errors
+                message = disable2FAResponse.Message,
+                succeded = disable2FAResponse.Succeeded,
+                errors = disable2FAResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            response = disable2FAResponse
+            data = new
+            {
+                disable2FAResponse.Title,
+                disable2FAResponse.Message,
+                disable2FAResponse.Succeeded,
+                disable2FAResponse.Response
+            }
         });
     }
 }

@@ -102,6 +102,7 @@ else
 
 app.UseProblemDetails();
 app.UseRouting();
+app.UseOutputCache();
 
 app.UseAuthentication();
 app.UseMiddleware<JwtCookieAuthMiddleware>();  // Custom middleware for JWT cookie handling
@@ -118,7 +119,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 // Caching and output optimization (if needed)
-app.UseOutputCache();
 
 // Swagger UI and API documentation
 app.UseSwaggerUi(settings =>

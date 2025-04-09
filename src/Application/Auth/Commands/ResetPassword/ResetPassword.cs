@@ -55,16 +55,10 @@ public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordComm
     }
 }
 
-public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, IActionResult>
+public class ResetPasswordCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<ResetPasswordCommand, IActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ResetPasswordCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
-    {
-        _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IIdentityService _identityService = identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<IActionResult> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
@@ -75,13 +69,21 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = resetPasswordResponse.Errors
+                message = resetPasswordResponse.Message,
+                succeded = resetPasswordResponse.Succeeded,
+                errors = resetPasswordResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            data = resetPasswordResponse
+            data = new
+            {
+                resetPasswordResponse.Title,
+                resetPasswordResponse.Message,
+                resetPasswordResponse.Succeeded,
+                resetPasswordResponse.Response
+            }
         });
     }
 }

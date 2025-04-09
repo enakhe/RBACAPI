@@ -48,26 +48,30 @@ public class SignInCommandHandler(IIdentityService identityService, IHttpContext
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
-            var problemDetails = new ProblemDetails
-            {
-                Title = "Unauthorized",
-                Detail = "Invalid credentials. Please check your email and password.",
-                Status = StatusCodes.Status401Unauthorized,
-            };
-
-            return new ObjectResult(problemDetails)
-            {
-                StatusCode = StatusCodes.Status401Unauthorized,
-            };
+            return
+               new ObjectResult(new
+               {
+                   message = signInResponse.Message,
+                   succeded = signInResponse.Succeeded,
+                   errors = signInResponse.Errors
+               })
+               {
+                   StatusCode = StatusCodes.Status401Unauthorized
+               };
         }
 
-        _cookieService.SetCookie(signInResponse.AccessToken, "Auth.JWT.AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
-        _cookieService.SetCookie(signInResponse.RefreshToken, "Auth.JWT.RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
+        _cookieService.SetCookie(signInResponse.Response.AccessToken, "Auth.JWT.AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
+        _cookieService.SetCookie(signInResponse.Response.RefreshToken, "Auth.JWT.RefreshToken", DateTimeOffset.UtcNow.AddDays(7));
 
         return new OkObjectResult(new
         {
-            message = "Great news! You’ve logged in successfully.",
-            data = signInResponse
+            data = new
+            {
+                signInResponse.Title,
+                signInResponse.Message,
+                signInResponse.Succeeded,
+                signInResponse.Response,
+            }
         });
     }
 }

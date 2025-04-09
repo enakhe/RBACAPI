@@ -32,21 +32,30 @@ public class EnableAuthenticatorCommandHandler : IRequestHandler<EnableAuthentic
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("We couldn’t get your recovery codes. Please ensure you're authenticated");
+            return new UnauthorizedResult();
 
         var enableAuthenticatorResponse = await _accountService.EnableAuthenticator(userId);
+
         if (!enableAuthenticatorResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = enableAuthenticatorResponse.Errors
+                message = enableAuthenticatorResponse.Message,
+                succeded = enableAuthenticatorResponse.Succeeded,
+                errors = enableAuthenticatorResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            response = enableAuthenticatorResponse
+            data = new
+            {
+                enableAuthenticatorResponse.Title,
+                enableAuthenticatorResponse.Message,
+                enableAuthenticatorResponse.Succeeded,
+                enableAuthenticatorResponse.Response
+            }
         });
     }
 }

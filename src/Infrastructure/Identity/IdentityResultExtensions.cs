@@ -8,7 +8,12 @@ public static class IdentityResultExtensions
     public static Result ToApplicationResult(this IdentityResult result)
     {
         return result.Succeeded
-            ? Result.Success(new { })
-            : Result.Failure(result.Errors.Select(e => e.Description));
+            ? Result.Success(
+                "",
+                "",
+                new { })
+            : Result.Failure(
+                "An error occurred while processing your request",
+                result.Errors.Select(e => e.Description));
     }
 }

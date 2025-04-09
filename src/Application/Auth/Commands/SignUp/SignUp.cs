@@ -53,18 +53,10 @@ public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
     }
 }
 
-public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
+public class SignUpCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<SignUpCommand, ActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly ICookieService _cookieService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public SignUpCommandHandler(IIdentityService identityService, ICookieService cookieService, IHttpContextAccessor httpContextAccessor)
-    {
-        _identityService = identityService;
-        _cookieService = cookieService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IIdentityService _identityService = identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<ActionResult> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
@@ -75,7 +67,8 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
             return
                 new ObjectResult(new
                 {
-                    message = "One or more validation failures have occurred",
+                    message = signUpResponse.Message,
+                    succeded = signUpResponse.Succeeded,
                     errors = signUpResponse.Errors
                 })
                 {
@@ -85,7 +78,13 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, ActionResult>
 
         return new OkObjectResult(new
         {
-            data = signUpResponse
+            data = new
+            {
+                signUpResponse.Title,
+                signUpResponse.Message,
+                signUpResponse.Succeeded,
+                signUpResponse.Response
+            }
         });
     }
 }

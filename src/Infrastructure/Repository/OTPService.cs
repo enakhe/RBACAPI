@@ -47,21 +47,24 @@ public class OTPService : IOTPService
 
         if (string.IsNullOrEmpty(savedOtp))
         {
-            IEnumerable<string> errors = ["OTP code has expired or was never issued, kindly request another one"];
-            return Result.Failure(errors);
+            return Result.Failure(
+                "One or more validation failures have occurred",
+                ["OTP code has expired or was never issued, kindly request another one"]
+            );
         }
 
         if (otp != savedOtp)
-        {
-            IEnumerable<string> errors = ["Verification of OTP failed"];
-            return Result.Failure(errors);
-        }
+            return Result.Failure(
+                "One or more validation failures have occurred",
+                ["Verification of OTP failed, kindly request another one"]);
 
         await _redisDb.KeyDeleteAsync(redisKey);
-        return Result.Success(new
-        {
-            Message = "Sucessfully validated email"
-        });
+
+        return Result.Success(
+            "Sucessfully Verified Email",
+            "Email verification passed. You can now login and access your account",
+            new { }
+        );
     }
 
     public void SetOtpCookie(HttpContext context, string otp)

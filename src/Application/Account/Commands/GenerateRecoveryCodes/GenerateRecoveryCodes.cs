@@ -32,7 +32,7 @@ public class GenerateRecoveryCodesCommandHandler : IRequestHandler<GenerateRecov
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("We couldn’t get your recovery codes. Please ensure you're authenticated");
+            return new UnauthorizedResult();
 
         var getRecoveryCodesResponse = await _accountService.GenerateRecoveryCodesAsync(userId);
         if (!getRecoveryCodesResponse.Succeeded)
@@ -40,13 +40,21 @@ public class GenerateRecoveryCodesCommandHandler : IRequestHandler<GenerateRecov
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = getRecoveryCodesResponse.Errors
+                message = getRecoveryCodesResponse.Message,
+                succeded = getRecoveryCodesResponse.Succeeded,
+                errors = getRecoveryCodesResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            response = getRecoveryCodesResponse
+            data = new
+            {
+                getRecoveryCodesResponse.Title,
+                getRecoveryCodesResponse.Message,
+                getRecoveryCodesResponse.Succeeded,
+                getRecoveryCodesResponse.Response
+            }
         });
     }
 }

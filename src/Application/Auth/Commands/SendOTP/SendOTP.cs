@@ -15,6 +15,12 @@ public class SendOTPCommandValidator : AbstractValidator<SendOTPCommand>
 {
     public SendOTPCommandValidator()
     {
+        RuleFor(x => x.Email)
+            .EmailAddress()
+            .WithMessage("The email field must be a valid email address")
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("The email field is required");
     }
 }
 
@@ -32,14 +38,21 @@ public class SendOTPCommandHandler(IIdentityService identityService, IHttpContex
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                message = "Unable to generate and send otp.",
-                error = otpResponse.Errors
+                message = otpResponse.Message,
+                succeded = otpResponse.Succeeded,
+                errors = otpResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            data = otpResponse
+            data = new
+            {
+                otpResponse.Title,
+                otpResponse.Message,
+                otpResponse.Succeeded,
+                otpResponse.Response
+            }
         });
     }
 }

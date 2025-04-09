@@ -14,17 +14,10 @@ public class LogOutCommandValidator : AbstractValidator<LogOutCommand>
     }
 }
 
-public class LogOutCommandHandler : IRequestHandler<LogOutCommand, IActionResult>
+public class LogOutCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<LogOutCommand, IActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-
-    public LogOutCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
-    {
-        _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IIdentityService _identityService = identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<IActionResult> Handle(LogOutCommand request, CancellationToken cancellationToken)
     {
@@ -32,11 +25,23 @@ public class LogOutCommandHandler : IRequestHandler<LogOutCommand, IActionResult
         var userId = httpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         var logOutResponse = await _identityService.LogOut(userId!);
+
         return !logOutResponse.Succeeded
-            ? new BadRequestObjectResult("Invalid  request")
+            ? new BadRequestObjectResult(new
+            {
+                message = logOutResponse.Message,
+                succeded = logOutResponse.Succeeded,
+                errors = logOutResponse.Errors
+            })
             : new OkObjectResult(new
             {
-                data = logOutResponse
+                data = new
+                {
+                    logOutResponse.Title,
+                    logOutResponse.Message,
+                    logOutResponse.Succeeded,
+                    logOutResponse.Response
+                }
             });
     }
 }

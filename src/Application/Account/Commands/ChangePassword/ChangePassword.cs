@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
 
-namespace RBACAPI.Application.Auth.Commands.ChangePassword;
+namespace RBACAPI.Application.Account.Commands.ChangePassword;
 
 public record ChangePasswordCommand : IRequest<IActionResult>
 {
@@ -54,12 +54,12 @@ public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCo
 
 public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, IActionResult>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IAccountService _accountService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ChangePasswordCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
+    public ChangePasswordCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor)
     {
-        _identityService = identityService;
+        _accountService = accountService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -69,21 +69,30 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Invalid request");
+            return new UnauthorizedResult();
 
-        var changePasswordResponse = await _identityService.ChangePassword(userId, request.Password, request.NewPassword);
+        var changePasswordResponse = await _accountService.ChangePassword(userId, request.Password, request.NewPassword);
+
         if (!changePasswordResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = changePasswordResponse.Errors
+                message = changePasswordResponse.Message,
+                succeded = changePasswordResponse.Succeeded,
+                errors = changePasswordResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            data = changePasswordResponse
+            data = new
+            {
+                changePasswordResponse.Title,
+                changePasswordResponse.Message,
+                changePasswordResponse.Succeeded,
+                changePasswordResponse.Response
+            }
         });
     }
 }

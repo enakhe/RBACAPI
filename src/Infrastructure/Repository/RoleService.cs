@@ -23,7 +23,12 @@ public class RoleService : IRoleService
 
         var result = await _roleManager.CreateAsync(role);
         return !result.Succeeded
-            ? Result.Failure(result.Errors.Select(e => e.Description))
-            : Result.Success(new { role, message = "Role created successfully" });
+            ? Result.Failure(
+                "One or more validation failures have occurred",
+                result.Errors.Select(e => e.Description))
+            : Result.Success(
+                "Role created successfully",
+                "",
+                new { role});
     }
 }

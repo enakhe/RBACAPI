@@ -28,9 +28,5 @@ public interface IIdentityService
 
     Task<Result> LogOut(string userId);
 
-    Task<Result> ChangePassword(string userId, string password, string confirmPassword);
-
-    Task<Result> ChangeEmail(string userId, string email);
-
     string GetUserId();
 }

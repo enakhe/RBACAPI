@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
@@ -18,41 +19,49 @@ public class ChangeEmailCommandValidator : AbstractValidator<ChangeEmailCommand>
     {
         RuleFor(x => x.Email)
             .EmailAddress()
+            .WithMessage("The email field must be a valid email address")
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("The email field is required");
     }
 }
 
-public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, IActionResult>
+public class ChangeEmailCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<ChangeEmailCommand, IActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ChangeEmailCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
-    {
-        _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IAccountService _accountService = accountService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<IActionResult> Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
     {
-        var userId = _identityService.GetUserId();
+        var httpContext = _httpContextAccessor.HttpContext;
+        var user = httpContext?.User;
+        var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("Invalid request");
-        var changeEMmailResponse = await _identityService.ChangeEmail(userId, request.Email);
+            return new UnauthorizedResult();
+
+        var changeEMmailResponse = await _accountService.ChangeEmail(userId, request.Email);
 
         if (!changeEMmailResponse.Succeeded)
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                error = changeEMmailResponse.Errors
+                message = changeEMmailResponse.Message,
+                succeded = changeEMmailResponse.Succeeded,
+                errors = changeEMmailResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            response = changeEMmailResponse
+            data = new
+            {
+                changeEMmailResponse.Title,
+                changeEMmailResponse.Message,
+                changeEMmailResponse.Succeeded,
+                changeEMmailResponse.Response
+            }
         });
     }
 }

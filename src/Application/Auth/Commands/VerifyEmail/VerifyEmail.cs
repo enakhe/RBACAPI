@@ -16,10 +16,8 @@ public record VerifyEmailCommand : IRequest<IActionResult>
 
 public class VerifyEmailCommandValidator : AbstractValidator<VerifyEmailCommand>
 {
-    private readonly IApplicationDbContext _context;
-    public VerifyEmailCommandValidator(IApplicationDbContext context)
+    public VerifyEmailCommandValidator()
     {
-        _context = context;
 
         RuleFor(x => x.Email)
             .EmailAddress()
@@ -37,16 +35,10 @@ public class VerifyEmailCommandValidator : AbstractValidator<VerifyEmailCommand>
     }
 }
 
-public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, IActionResult>
+public class VerifyEmailCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<VerifyEmailCommand, IActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public VerifyEmailCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
-    {
-        _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IIdentityService _identityService = identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<IActionResult> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
@@ -57,14 +49,21 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, IAc
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return new BadRequestObjectResult(new
             {
-                message = "One or more validation failures have occurred",
-                error = verifyEmailResponse.Errors
+                message = verifyEmailResponse.Message,
+                succeded = verifyEmailResponse.Succeeded,
+                errors = verifyEmailResponse.Errors
             });
         }
 
         return new OkObjectResult(new
         {
-            verifyEmailResponse
+            data = new
+            {
+                verifyEmailResponse.Title,
+                verifyEmailResponse.Message,
+                verifyEmailResponse.Succeeded,
+                verifyEmailResponse.Response
+            }
         });
     }
 }
