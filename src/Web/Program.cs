@@ -37,7 +37,7 @@ builder.Services.AddProblemDetails(options =>
     {
         Title = "Unauthorized",
         Status = StatusCodes.Status401Unauthorized,
-        Detail = ex.Message
+        Detail = ex.Message,
     });
 
     options.Map<KeyNotFoundException>(ex => new ProblemDetails

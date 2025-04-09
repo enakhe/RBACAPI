@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
+using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Application.Auth.Commands.SignIn;
 
@@ -47,15 +48,17 @@ public class SignInCommandHandler(IIdentityService identityService, IHttpContext
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
-            return
-                new ObjectResult(new
-                {
-                    message = "Unauthorized access",
-                    errors = signInResponse.Errors
-                })
-                {
-                    StatusCode = StatusCodes.Status401Unauthorized
-                };
+            var problemDetails = new ProblemDetails
+            {
+                Title = "Unauthorized",
+                Detail = "Invalid credentials. Please check your email and password.",
+                Status = StatusCodes.Status401Unauthorized,
+            };
+
+            return new ObjectResult(problemDetails)
+            {
+                StatusCode = StatusCodes.Status401Unauthorized,
+            };
         }
 
         _cookieService.SetCookie(signInResponse.AccessToken, "Auth.JWT.AccessToken", DateTimeOffset.UtcNow.AddMinutes(30));
