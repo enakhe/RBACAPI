@@ -38,8 +38,8 @@ The goal is to offer a reusable and modular backend system that developers can i
 - **Security:** JWT-based Authentication & Role-Based Authorization
 - **Containerization:** Docker + Kubernetes
 - **Logging & Monitoring:** Serilog + OpenTelemetry
-- **CI/CD:** GitHub Actions / AWS DevOps
-- **Hosting & Deployment:** AWS Cloud
+- **CI/CD:** GitHub Actions / Azure DevOps
+- **Hosting & Deployment:** Azure Cloud
 
 
 ## **Project Setup**
@@ -77,7 +77,7 @@ dotnet run
 ### **How RBACAPI Can Scale**
 1. **Microservices Expansion:** RBACAPI is designed with microservices architecture using .NET Aspire, making it easy to scale specific components such as authentication, user management, and role-based access control independently.
 2. **Cloud-Native Deployment:** With Kubernetes and Azure, the API can handle increased workloads and scale dynamically as user demand grows.
-3. **Database Optimization:** Using PostgreSQL with caching mechanisms such as Redis ensures high availability and performance at scale.
+3. **Database Optimization:** Using Azure with caching mechanisms such as Redis ensures high availability and performance at scale.
 4. **Event-Driven Architecture:** Leveraging RabbitMQ or Kafka ensures real-time processing of authentication and authorization requests without bottlenecks.
 5. **Modular Design:** Developers can plug in additional authentication methods like biometric authentication or OAuth2 without modifying the core codebase.
 
@@ -153,7 +153,7 @@ RBACAPI is positioned to become a standard boilerplate for secure user authentic
 
 ### **User Profile Management**
 - [ ] APIs for updating user profiles
-- [ ] Profile image upload (AWS S3 / Azure Blob Storage)
+- [ ] Profile image upload (Azure Blob Storage)
 - [ ] Validation rules for profile updates
 - [ ] Testing & documentation of profile management APIs
 

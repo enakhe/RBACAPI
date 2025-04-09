@@ -28,7 +28,7 @@ public class ProfileQueryHandler : IRequestHandler<ProfileQuery, IActionResult>
 
 
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("We couldn’t find your profile. Please ensure you're authenticated");
+            return new UnauthorizedResult();
 
         var profileResponse = await _accountService.ProfileAsync(userId);
         if (!profileResponse.Succeeded)

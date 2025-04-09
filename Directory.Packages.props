@@ -18,6 +18,7 @@
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageVersion Include="Google.Apis.Auth" Version="1.69.0" />
+    <PackageVersion Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Facebook" Version="9.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.3" />
