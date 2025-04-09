@@ -5,6 +5,7 @@ using RBACAPI.Application.Account.Commands.ChangePassword;
 using RBACAPI.Application.Account.Commands.Disable2FAuthentication;
 using RBACAPI.Application.Account.Commands.EnableAuthenticator;
 using RBACAPI.Application.Account.Commands.GenerateRecoveryCodes;
+using RBACAPI.Application.Account.Commands.UpdateProfile;
 using RBACAPI.Application.Account.Queries.Profile;
 using RBACAPI.Application.Common.Security;
 
@@ -59,6 +60,13 @@ public class Account : EndpointGroupBase
     public Task<IActionResult> Disable2FAuthentication(ISender sender)
     {
         return sender.Send(new Disable2FAuthenticationCommand());
+    }
+
+    [OutputCache]
+    [AuthorizeUser]
+    public Task<ActionResult> UpdateProfile(ISender sender, UpdateProfileCommand command)
+    {
+        return sender.Send(command);
     }
 }
 

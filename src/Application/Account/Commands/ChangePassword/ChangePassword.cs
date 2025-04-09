@@ -52,16 +52,10 @@ public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCo
     }
 }
 
-public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, IActionResult>
+public class ChangePasswordCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<ChangePasswordCommand, IActionResult>
 {
-    private readonly IAccountService _accountService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ChangePasswordCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor)
-    {
-        _accountService = accountService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IAccountService _accountService = accountService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<IActionResult> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {

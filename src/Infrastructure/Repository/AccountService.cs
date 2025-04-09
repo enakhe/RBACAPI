@@ -224,7 +224,7 @@ public class AccountService(UserManager<ApplicationUser> userManager) : IAccount
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
                 return Result.Failure(
                     "Invalid File Type",
-                    ["The file type is not supported. Please upload an image in JPEG, PNG, or GIF format"]
+                    ["The file type is not supported. Please upload an image in JPEG, PNG, or JPG format"]
                 );
 
             await file.CopyToAsync(dataStream);

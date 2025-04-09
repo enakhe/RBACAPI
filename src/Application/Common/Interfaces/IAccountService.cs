@@ -1,4 +1,6 @@
-﻿using RBACAPI.Application.Common.Models;
+﻿using Microsoft.AspNetCore.Http;
+using RBACAPI.Application.Common.Models;
+using RBACAPI.Domain.Enums;
 
 namespace RBACAPI.Application.Common.Interfaces;
 public interface IAccountService
@@ -9,4 +11,5 @@ public interface IAccountService
     Task<Result> GenerateRecoveryCodesAsync(string userId);
     Task<Result> EnableAuthenticator(string userId);
     Task<Result> Disable2FAuthentication(string userId);
+    Task<Result> UpdateProfileAsync(string userId, string firstName, string lastName, IFormFile file, GenderData gender, string email, string phoneNumber);
 }
