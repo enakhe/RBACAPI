@@ -1,9 +1,11 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
+using RBACAPI.Domain.Enums;
 using RBACAPI.Infrastructure.Identity;
 
 namespace RBACAPI.Infrastructure.Repository;
@@ -176,6 +178,100 @@ public class AccountService(UserManager<ApplicationUser> userManager) : IAccount
                 "Two-Factor Authentication has been successfully disabled on your account. Your account is no longer protected by 2FA. Please ensure your security settings are updated if needed",
                 new{}
             );
+    }
+
+    public async Task<Result> UpdateProfileAsync(string userId, string firstName, string lastName, IFormFile file, GenderData gender, string email, string phoneNumber)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return UserNotAuthenticated();
+
+        if (user.FirstName != firstName)
+            user.FirstName = firstName;
+        
+        if (user.LastName != lastName)
+            user.LastName = lastName;
+
+        if (user.Gender != gender)
+            user.Gender = gender;
+
+        if (user.Email != email)
+        {
+            var setEmailResult = await _userManager.SetEmailAsync(user, email);
+            if (!setEmailResult.Succeeded)
+                return Result.Failure(
+                    "Error updating email address",
+                    setEmailResult.Errors.Select(e => e.Description)
+                );
+        }
+
+        if (user.PhoneNumber != phoneNumber)
+        {
+            var setPhoneNumberResult = await _userManager.SetPhoneNumberAsync(user, phoneNumber);
+            if (!setPhoneNumberResult.Succeeded)
+                return Result.Failure(
+                    "Error updating phone number",
+                    setPhoneNumberResult.Errors.Select(e => e.Description)
+                );
+        }
+
+        if (file != null && file.Length > 0)
+        {
+            using var dataStream = new MemoryStream();
+            var permittedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+                return Result.Failure(
+                    "Invalid File Type",
+                    ["The file type is not supported. Please upload an image in JPEG, PNG, or GIF format"]
+                );
+
+            await file.CopyToAsync(dataStream);
+
+            if (dataStream.Length < 2097152)
+                user.ProfilePicture = dataStream.ToArray();
+
+            else
+            {
+                return Result.Failure(
+                     "Profile Picture Update Failed",
+                     ["Unable to update your profile picture. The image size is too large. Please upload an image that is below 2MB"]
+                );
+            }
+        }
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+            return Result.Failure(
+                "One or more validation failures have occurred",
+                result.Errors.Select(e => e.Description)
+            );
+
+        return Result.Success(
+            "Profile Update Successful",
+            "Success! User profile has been successfully updated",
+            new
+            {
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.FullName,
+                user.UserName,
+                user.Email,
+                user.PhoneNumber,
+                user.Gender,
+                user.ProfilePicture,
+                user.LastLoginDate,
+                user.EmailConfirmed,
+                user.PhoneNumberConfirmed,
+                user.TwoFactorEnabled,
+                user.LockoutEnabled,
+                user.AccessFailedCount,
+                user.LockoutEnd,
+            }
+        );
     }
 
     public static Result UserNotAuthenticated()
