@@ -1,4 +1,5 @@
-﻿using RBACAPI.Application.Auth.Commands.SignIn;
+
+using RBACAPI.Application.Auth.Commands.SignIn;
 
 namespace RBACAPI.Application.FunctionalTests.Auth.Commands;
 
