@@ -31,8 +31,27 @@ public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordComm
     {
         RuleFor(x => x.Email)
             .EmailAddress()
+            .WithMessage("The email field must be a valid email address")
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("The email field is required");
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .NotNull()
+            .WithMessage("The password field is required")
+            .MinimumLength(6)
+            .WithMessage("The minimum length of the password must be more than six characters")
+            .Matches("[A-Z]").WithMessage("The password must contain at least one uppercase letter")
+            .Matches("[a-z]").WithMessage("The password must contain at least one lowercase letter")
+            .Matches("[0-9]").WithMessage("The password must contain at least one digit");
+
+        RuleFor(x => x.ConfirmPassword)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("The confirmation password field is required.")
+            .Matches(x => x.Password)
+            .WithMessage("The password and confirmation password do not match.");
     }
 }
 
@@ -49,12 +68,6 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
 
     public async Task<IActionResult> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-        if (request.Password != request.ConfirmPassword)
-            return new BadRequestObjectResult(new
-            {
-                error = "The new password and confirmation password do not match."
-            });
-
         var resetPasswordResponse = await _identityService.ResetPasswordAsync(request.Email, request.Code, request.Password);
 
         if (!resetPasswordResponse.Succeeded)

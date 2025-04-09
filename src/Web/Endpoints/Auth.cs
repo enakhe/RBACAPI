@@ -59,6 +59,7 @@ public class Auth : EndpointGroupBase
         return sender.Send(command);
     }
 
+    [AuthorizeUser]
     public Task<IActionResult> LogOut(ISender sender)
     {
         return sender.Send(new LogOutCommand());

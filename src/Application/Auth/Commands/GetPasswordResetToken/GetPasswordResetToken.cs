@@ -7,8 +7,7 @@ namespace RBACAPI.Application.Auth.Commands.GetPasswordResetToken;
 
 public record GetPasswordResetTokenCommand : IRequest<IActionResult>
 {
-    [Required]
-    [EmailAddress]
+    [Required, EmailAddress]
     public required string Email { get; set; }
 }
 
@@ -18,30 +17,20 @@ public class GetPasswordResetTokenCommandValidator : AbstractValidator<GetPasswo
     {
         RuleFor(x => x.Email)
             .EmailAddress()
+            .WithMessage("The email field must be a valid email address")
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("The email field is required");
     }
 }
 
-public class GetPasswordResetTokenCommandHandler : IRequestHandler<GetPasswordResetTokenCommand, IActionResult>
+public class GetPasswordResetTokenCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<GetPasswordResetTokenCommand, IActionResult>
 {
-    private readonly IIdentityService _identityService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public GetPasswordResetTokenCommandHandler(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
-    {
-        _identityService = identityService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IIdentityService _identityService = identityService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<IActionResult> Handle(GetPasswordResetTokenCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.Email))
-        {
-            _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return new UnauthorizedResult();
-        }
-
         var getResetPasswordResponse = await _identityService.GetPasswordResetTokenAsync(request.Email);
         if (!getResetPasswordResponse.Succeeded)
         {
@@ -54,7 +43,7 @@ public class GetPasswordResetTokenCommandHandler : IRequestHandler<GetPasswordRe
 
         return new OkObjectResult(new
         {
-            getResetPasswordResponse
+            data = getResetPasswordResponse
         });
     }
 }

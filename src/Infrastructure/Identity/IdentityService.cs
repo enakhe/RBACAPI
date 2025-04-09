@@ -201,13 +201,16 @@ public class IdentityService : IIdentityService
 
     public async Task<Result> VerifyEmailAsync(string email, string otp)
     {
+        static Result FailedVerifyemailResult() =>
+            Result.Failure(["Unable tovery email. Please check the provided email address or code and try again."]);
+
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-            return Result.Failure(["Unable to verify OTP. Please check the provided email address or code and try again."]);
+            return FailedVerifyemailResult();
 
         var cachedUser = await GetUserFromRedisCacheAsync(user.Id);
-        if(cachedUser == null || cachedUser.Id != user.Id)
-            return Result.Failure(["Unable to verify OTP. Please check the provided email address or code and try again."]);
+        if (cachedUser == null || cachedUser.Id != user.Id)
+            return FailedVerifyemailResult();
 
         var verifyEmailResponse = await _otpService.ValidateOTPAsync(email, otp);
         if (!verifyEmailResponse.Succeeded)
@@ -220,27 +223,26 @@ public class IdentityService : IIdentityService
 
         return Result.Success(new
         {
-            Message = "Sucessfully validated email"
+            message = "Sucessfully validated email"
         });
     }
 
     public async Task<Result> GetPasswordResetTokenAsync(string email)
     {
+        static Result FailedResetTokenResult() =>
+            Result.Failure(["Unable to send password reset token. Please check the provided email address and try again."]);
+
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-        {
-            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
-            return Result.Failure(errors);
-        }
+            return FailedResetTokenResult();
 
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
         return Result.Success(new
         {
-            Succeeded = true,
-            Code = code,
-            Messgae = "Sucessfully sent reset token"
+            code,
+            message = "Successfully sent reset token"
         });
     }
 
@@ -248,22 +250,17 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-        {
-            IEnumerable<string> errors = new List<string> { "Invalid attempt" };
-            return Result.Failure(errors);
-        }
+            Result.Failure(["Unable to reset password. Please check the provided email address or passwords and try again."]);
 
         var decodeCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-        var result = await _userManager.ResetPasswordAsync(user, decodeCode, password);
-        if (!result.Succeeded)
-        {
-            return Result.Failure(result.Errors.Select(e => e.Description));
-        }
+        var result = await _userManager.ResetPasswordAsync(user!, decodeCode, password);
 
-        return Result.Success(new
-        {
-            Message = "Succesfully reset password, kindly login"
-        });
+        return !result.Succeeded
+            ? Result.Failure(result.Errors.Select(e => e.Description))
+            : Result.Success(new
+                {
+                    message = "Succesfully reset password, kindly login"
+                });
     }
 
     public async Task<Result> ChangeEmail(string userId, string email)

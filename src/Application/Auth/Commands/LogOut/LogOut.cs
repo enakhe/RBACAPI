@@ -5,9 +5,7 @@ using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.Auth.Commands.LogOut;
 
-public record LogOutCommand : IRequest<IActionResult>
-{
-}
+public record LogOutCommand : IRequest<IActionResult>;
 
 public class LogOutCommandValidator : AbstractValidator<LogOutCommand>
 {
@@ -32,13 +30,13 @@ public class LogOutCommandHandler : IRequestHandler<LogOutCommand, IActionResult
     {
         var httpContext = _httpContextAccessor.HttpContext;
         var userId = httpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var logOutResponse = await _identityService.LogOut(userId!);
-        if (!logOutResponse.Succeeded)
-            return new BadRequestObjectResult("Invalid  request");
 
-        return new OkObjectResult(new
-        {
-            data = logOutResponse
-        });
+        var logOutResponse = await _identityService.LogOut(userId!);
+        return !logOutResponse.Succeeded
+            ? new BadRequestObjectResult("Invalid  request")
+            : new OkObjectResult(new
+                {
+                    data = logOutResponse
+                });
     }
 }
