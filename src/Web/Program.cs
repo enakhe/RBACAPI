@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi.Models;
 using RBACAPI.Infrastructure.Data;
 using RBACAPI.Infrastructure.Middleware;
@@ -70,30 +70,24 @@ app.UseMiddleware<ErrorMiddleware>();
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseStaticFiles();
 app.UseOutputCache();
 app.UseMiddleware<JwtCookieAuthMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseSwaggerUi(settings =>
 {
     settings.Path = "/api";
     settings.DocumentPath = "/api/specification.json";
 });
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-
 app.MapRazorPages();
-
 app.MapFallbackToFile("index.html");
-
 app.Map("/", () => Results.Redirect("/api"));
-
 app.MapEndpoints();
-
 app.Run();
 
 public partial class Program { }

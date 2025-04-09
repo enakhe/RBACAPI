@@ -5,7 +5,6 @@ using RBACAPI.Application.Auth.Commands.LogOut;
 using RBACAPI.Application.Auth.Commands.ResetPassword;
 using RBACAPI.Application.Auth.Commands.SendOTP;
 using RBACAPI.Application.Auth.Commands.SignIn;
-using RBACAPI.Application.Common.Models;
 using RBACAPI.Application.Common.Security;
 using RBACAPI.Application.User.Commands.SignUp;
 using RBACAPI.Application.User.Commands.VerifyEmail;

@@ -1,14 +1,18 @@
 ﻿using System.Text;
 using EcommerceAPI.Infrastructure.Repository;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using RBACAPI.Application.Auth.Commands.SignIn;
+using RBACAPI.Application.Common.Behaviours;
 using RBACAPI.Application.Common.Interfaces;
-using Microsoft.Extensions.Hosting;
 using RBACAPI.Domain.Constants;
 using RBACAPI.Infrastructure.Data;
 using RBACAPI.Infrastructure.Data.Interceptors;
@@ -116,6 +120,16 @@ public static class DependencyInjection
 
         services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(DefaultRoles.Administrator)));
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<SignInCommandHandler>());
+        services.AddValidatorsFromAssemblyContaining<SignInCommandValidator>();
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = false;
+        });
+
 
         return services;
     }

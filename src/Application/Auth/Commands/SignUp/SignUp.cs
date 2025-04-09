@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
-using RBACAPI.Application.Common.Models;
 
 namespace RBACAPI.Application.User.Commands.SignUp;
 public record SignUpCommand : IRequest<ActionResult>

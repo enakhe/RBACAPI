@@ -1,16 +1,14 @@
 using System.Security.Claims;
 using System.Text;
-using StackExchange.Redis;
-using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Application.Common.Models;
 using RBACAPI.Infrastructure.Interface;
-using static System.Net.WebRequestMethods;
-using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace RBACAPI.Infrastructure.Identity;
 
@@ -156,8 +154,8 @@ public class IdentityService : IIdentityService
 
         return Result.Success(new
         {
-           title = "Account created sucessfully",
-           message = "Welcome aboard! Your account has been created successfully",
+            title = "Account created sucessfully",
+            message = "Welcome aboard! Your account has been created successfully",
         });
     }
 
@@ -166,7 +164,7 @@ public class IdentityService : IIdentityService
         var user = await _userManager.FindByEmailAsync(email.Trim().ToLowerInvariant());
         if (user == null)
             return Result.Failure(["Unable to send OTP. Please check the provided email address and try again."]);
-        
+
         var cachedUser = await GetUserFromRedisCacheAsync(user.Id);
 
         if (cachedUser == null || cachedUser.Id != user.Id)
@@ -258,9 +256,9 @@ public class IdentityService : IIdentityService
         return !result.Succeeded
             ? Result.Failure(result.Errors.Select(e => e.Description))
             : Result.Success(new
-                {
-                    message = "Succesfully reset password, kindly login"
-                });
+            {
+                message = "Succesfully reset password, kindly login"
+            });
     }
 
     public async Task<Result> ChangeEmail(string userId, string email)

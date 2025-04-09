@@ -35,8 +35,8 @@ public class LogOutCommandHandler : IRequestHandler<LogOutCommand, IActionResult
         return !logOutResponse.Succeeded
             ? new BadRequestObjectResult("Invalid  request")
             : new OkObjectResult(new
-                {
-                    data = logOutResponse
-                });
+            {
+                data = logOutResponse
+            });
     }
 }

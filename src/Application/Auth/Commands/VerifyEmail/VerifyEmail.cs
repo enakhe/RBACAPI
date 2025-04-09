@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RBACAPI.Application.Common.Interfaces;
 
 namespace RBACAPI.Application.User.Commands.VerifyEmail;

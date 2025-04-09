@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RBACAPI.Application.Common.Interfaces;
 
@@ -48,7 +47,7 @@ public class SignInCommandHandler(IIdentityService identityService, IHttpContext
         {
             _httpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
-            return 
+            return
                 new ObjectResult(new
                 {
                     message = "Unauthorized access",
