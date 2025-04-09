@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using RBACAPI.Application.Common.Exceptions;
 
 namespace RBACAPI.Web.Middleware
@@ -8,11 +9,13 @@ namespace RBACAPI.Web.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ErrorMiddleware> _logger;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public ErrorMiddleware(RequestDelegate next, ILogger<ErrorMiddleware> logger)
+        public ErrorMiddleware(RequestDelegate next, ILogger<ErrorMiddleware> logger, ProblemDetailsFactory problemDetailsFactory)
         {
             _next = next;
             _logger = logger;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -31,49 +34,50 @@ namespace RBACAPI.Web.Middleware
         {
             _logger.LogError(ex, "An error occurred");
 
-            var problemDetails = new ProblemDetails
-            {
-                Title = "An error occurred",
-                Status = StatusCodes.Status500InternalServerError,
-                Detail = ex.Message,
-            };
+            ProblemDetails problem;
 
             switch (ex)
             {
-                case ValidationException validationException:
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    problemDetails.Status = StatusCodes.Status400BadRequest;
-                    problemDetails.Extensions.Add("errors", validationException.Errors);
-                    break;
-
-                case InvalidOperationException:
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    problemDetails.Title = "Invalid operation";
-                    problemDetails.Status = StatusCodes.Status400BadRequest;
-                    break;
-
-                case KeyNotFoundException:
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                    problemDetails.Title = "Not found";
-                    problemDetails.Status = StatusCodes.Status404NotFound;
+                case ValidationException vex:
+                    problem = _problemDetailsFactory.CreateProblemDetails(
+                        context,
+                        statusCode: StatusCodes.Status400BadRequest,
+                        title: "Validation Error",
+                        detail: vex.Message);
+                    problem.Extensions["errors"] = vex.Errors;
                     break;
 
                 case UnauthorizedAccessException:
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    problemDetails.Title = "Unauthorized";
-                    problemDetails.Status = StatusCodes.Status401Unauthorized;
+                    problem = _problemDetailsFactory.CreateProblemDetails(
+                        context,
+                        statusCode: StatusCodes.Status401Unauthorized,
+                        title: "Unauthorized",
+                        detail: ex.Message);
+                    break;
+
+                case KeyNotFoundException:
+                    problem = _problemDetailsFactory.CreateProblemDetails(
+                        context,
+                        statusCode: StatusCodes.Status404NotFound,
+                        title: "Not Found",
+                        detail: ex.Message);
                     break;
 
                 default:
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    problemDetails.Title = "Internal Server Error";
-                    problemDetails.Status = StatusCodes.Status500InternalServerError;
+                    problem = _problemDetailsFactory.CreateProblemDetails(
+                        context,
+                        statusCode: StatusCodes.Status500InternalServerError,
+                        title: "Internal Server Error",
+                        detail: ex.Message);
                     break;
             }
 
             context.Response.ContentType = "application/problem+json";
-            var responseMessage = JsonSerializer.Serialize(problemDetails);
-            return context.Response.WriteAsync(responseMessage);
+            context.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
+
+            var result = JsonSerializer.Serialize(problem);
+            return context.Response.WriteAsync(result);
         }
+
     }
 }
