@@ -7,24 +7,24 @@ using RBACAPI.Domain.Enums;
 
 namespace RBACAPI.Application.Account.Commands.UpdateProfile;
 
-public record UpdateProfileCommand : IRequest<ActionResult>
+public record UpdateProfileCommand : IRequest<IActionResult>
 {
-    [Required]
+    [Required, FromForm]
     public string? FirstName { get; init; }
 
-    [Required]
+    [Required, FromForm]
     public string? LastName { get; init; }
 
-    [Required]
+    [Required, FromForm]
     public IFormFile? ProfilePicture { get; init; }
 
-    [Required]
-    public GenderData GenderData { get; init; }
+    [Required, FromForm]
+    public GenderData Gender { get; init; }
 
-    [Required, EmailAddress]
+    [Required, EmailAddress, FromForm]
     public required string Email { get; set; }
 
-    [Required, Phone]
+    [Required, Phone, FromForm]
     public string? PhoneNumber { get; init; }
 }
 
@@ -55,7 +55,7 @@ public class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileComm
             .Must(x => x != null && (x.ContentType == "image/jpeg" || x.ContentType == "image/png" || x.ContentType == "image/jpg"))
             .WithMessage("The profile picture field must be a jpeg, jpg or png file");
 
-        RuleFor(x => x.GenderData)
+        RuleFor(x => x.Gender)
             .NotNull()
             .NotEmpty()
             .WithMessage("The gender field is required")
@@ -77,12 +77,12 @@ public class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileComm
 }
 
 
-public class UpdateProfileCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<UpdateProfileCommand, ActionResult>
+public class UpdateProfileCommandHandler(IAccountService accountService, IHttpContextAccessor httpContextAccessor) : IRequestHandler<UpdateProfileCommand, IActionResult>
 {
     private readonly IAccountService _accountService = accountService;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public async Task<ActionResult> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
         var httpContext = _httpContextAccessor.HttpContext;
         var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -90,7 +90,7 @@ public class UpdateProfileCommandHandler(IAccountService accountService, IHttpCo
         if (string.IsNullOrEmpty(userId))
             return new UnauthorizedResult();
 
-        var updateProfileResponse = await _accountService.UpdateProfileAsync(userId, request.FirstName!, request.LastName!, request.ProfilePicture!, request.GenderData, request.Email, request.PhoneNumber!);
+        var updateProfileResponse = await _accountService.UpdateProfileAsync(userId, request.FirstName!, request.LastName!, request.ProfilePicture!, request.Gender, request.Email, request.PhoneNumber!);
 
         if (!updateProfileResponse.Succeeded)
         {

@@ -15,7 +15,8 @@ public class Auth : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
+        app.MapGroup("/auth")
+            .WithTags("Auth")
             .MapPost(SignIn, "signin")
             .MapPost(SignUp, "signup")
             .MapPost(SendOTP, "send-otp")

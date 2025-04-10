@@ -16,14 +16,18 @@ public class Account : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-            .MapGet(UserProfile, "profile")
-            .MapPost(EnableAuthenticator, "enable-2fa")
-            .MapPost(Disable2FAuthentication, "disable-2fa")
-            .MapPost(GenerateRecoveryCodes, "generate-recovery-codes")
-            .MapPost(ChangePassword, "change-password")
-            .MapPost(ChangeEmail, "change-email");
+        app.MapGroup("/account")
+            .WithTags("Account")
+            .MapGet(UserProfile, "/profile")
+            .MapPost(EnableAuthenticator, "/enable-2fa")
+            .MapPost(Disable2FAuthentication, "/disable-2fa")
+            .MapPost(GenerateRecoveryCodes, "/generate-recovery-codes")
+            .MapPost(ChangePassword, "/change-password")
+            .MapPost(ChangeEmail, "/change-email")
+            .MapPost(UpdateProfile, "/update-profile");
     }
+
+
 
     [OutputCache]
     [AuthorizeUser]
@@ -62,12 +66,11 @@ public class Account : EndpointGroupBase
         return sender.Send(new Disable2FAuthenticationCommand());
     }
 
-    [OutputCache]
     [AuthorizeUser]
-    public Task<ActionResult> UpdateProfile(ISender sender, UpdateProfileCommand command)
+    [IgnoreAntiforgeryToken]
+    [Consumes("multipart/form-data")]
+    public Task<IActionResult> UpdateProfile(ISender sender, [FromForm] UpdateProfileCommand command)
     {
         return sender.Send(command);
     }
 }
-
-

@@ -5,6 +5,8 @@ using NSwag.Generation.Processors.Security;
 using RBACAPI.Application.Common.Interfaces;
 using RBACAPI.Infrastructure.Data;
 using RBACAPI.Web.Services;
+using Hellang.Middleware.ProblemDetails;
+using RBACAPI.Application.Common.Exceptions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -25,27 +27,61 @@ public static class DependencyInjection
 
         services.AddRazorPages();
 
-        // Customise default API behaviour
-        services.Configure<ApiBehaviorOptions>(options =>
-            options.SuppressModelStateInvalidFilter = true);
+        // Only register these services now (without NSwag)
+        services.AddHttpContextAccessor();
+
+        services.AddAntiforgery(options =>
+        {
+            options.HeaderName = "X-XSRF-TOKEN";
+            options.Cookie.Name = "XSRF-TOKEN";
+            options.Cookie.HttpOnly = false;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.SuppressXFrameOptionsHeader = false;
+        });
 
         services.AddEndpointsApiExplorer();
-
-        services.AddOpenApiDocument((configure, sp) =>
+        services.AddSwaggerGen(options =>
         {
-            configure.Title = "RBACAPI API";
-
-            // Add JWT
-            configure.AddSecurity("Auth.JWT.AccessToken", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
             {
-                Type = OpenApiSecuritySchemeType.ApiKey,
+                Version = "v1",
+                Title = "RBACAPI API",
+                Description = "A full Role Based Access Control API for administration, privileges, and permissions",
+                Contact = new Microsoft.OpenApi.Models.OpenApiContact { Name = "Samuel Izuagbe", Email = "izuagbesam@gmail.com" }
+            });
+
+            options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
                 Name = "Authorization",
-                In = OpenApiSecurityApiKeyLocation.Header,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "Auth.JWT.AccessToken",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
                 Description = "Type into the textbox: Bearer {your JWT token}."
             });
 
-            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Auth.JWT.AccessToken"));
+            options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+            {
+                {
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                        {
+                            Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "Bearer",
+                        Name = "Bearer",
+                        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    },
+                    new List<string>()
+                }
+            });
         });
+
+        // Customise default API behaviour
+        services.Configure<ApiBehaviorOptions>(options =>
+            options.SuppressModelStateInvalidFilter = true);
 
         return services;
     }

@@ -9,7 +9,8 @@ public class OAuth : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
+        app.MapGroup("/oauth")
+            .WithTags("OAuth")
             .MapPost(GoogleSignIn, "google")
             .MapPost(FacebookSignIn, "facebook");
     }

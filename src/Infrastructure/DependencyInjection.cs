@@ -96,7 +96,7 @@ public static class DependencyInjection
         // Identity configuration
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
-            options.SignIn.RequireConfirmedAccount = false;
+            options.SignIn.RequireConfirmedAccount = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
